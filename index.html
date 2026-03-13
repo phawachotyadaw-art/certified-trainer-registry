@@ -1,728 +1,440 @@
-
-<div id="app" style="font-family:sans-serif;min-height:400px"></div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Certified Trainer Registry — DENSO TEN (THAILAND)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-<script type="text/babel" data-presets="react">
-const {useState,useEffect,useCallback}=React;
-const C={N:"#0D1F3C",G:"#B8860B",GL:"#F5E6C0",BG:"#FAF8F3",MU:"#64748B",LN:"#E8E4DA",
-  GR:"#15803D",GRB:"#DCFCE7",AM:"#B45309",AMB:"#FEF3C7",RD:"#B91C1C",RDB:"#FEE2E2",
-  BL:"#1D4ED8",BLB:"#DBEAFE",PU:"#7C3AED"};
-const CAT={Production:C.BL,Quality:C.GR,Safety:C.RD,HR:C.PU,Engineering:C.AM};
-const COMP=["การนำเสนอ","การถามคำถาม","ความรู้เนื้อหา","การจัดการชั้นเรียน","การใช้สื่อ","การให้ Feedback","ความตรงต่อเวลา"];
-const PIN="1234";
-const IS={width:"100%",padding:"8px 10px",borderRadius:8,border:"1.5px solid "+C.LN,fontSize:13,fontFamily:"inherit",outline:"none",boxSizing:"border-box",background:"#fff"};
-const yr=new Date().getFullYear(),mo=String(new Date().getMonth()+1).padStart(2,"0");
-
-const SC=[
-  {id:"c1",code:"KBN-001",name:"Kanban System",category:"Production",duration:7,renewMonths:24},
-  {id:"c2",code:"5S-002",name:"5S & Workplace Org.",category:"Quality",duration:7,renewMonths:24},
-  {id:"c3",code:"QCC-003",name:"QC Circle Basics",category:"Quality",duration:14,renewMonths:36},
-  {id:"c4",code:"SAF-004",name:"Safety Awareness",category:"Safety",duration:7,renewMonths:12},
-];
-const ST=[
-  {id:"tr1",name:"วรรณิภา สุขสวัสดิ์",dept:"Production",courseIds:["c1"],certDate:"2025-02-14",certNo:"CERT-2025-001",active:true,bio:"ผู้เชี่ยวชาญ Lean & Kanban 5+ ปี",competencies:{การนำเสนอ:4,การถามคำถาม:4,ความรู้เนื้อหา:5,การจัดการชั้นเรียน:4,การใช้สื่อ:3,"การให้ Feedback":4,ความตรงต่อเวลา:5}},
-  {id:"tr2",name:"ธนากร พัฒนาธร",dept:"QA",courseIds:["c1","c2"],certDate:"2025-02-14",certNo:"CERT-2025-002",active:true,bio:"วิทยากรด้าน Quality & Production",competencies:{การนำเสนอ:5,การถามคำถาม:3,ความรู้เนื้อหา:5,การจัดการชั้นเรียน:4,การใช้สื่อ:4,"การให้ Feedback":3,ความตรงต่อเวลา:4}},
-  {id:"tr3",name:"สิริมา เจริญผล",dept:"Logistics",courseIds:["c2"],certDate:"2025-03-01",certNo:"CERT-2025-003",active:true,bio:"เชี่ยวชาญ 5S ระดับ Advanced",competencies:{การนำเสนอ:3,การถามคำถาม:4,ความรู้เนื้อหา:4,การจัดการชั้นเรียน:5,การใช้สื่อ:4,"การให้ Feedback":5,ความตรงต่อเวลา:4}},
-  {id:"tr4",name:"กิตติพงษ์ แสงสว่าง",dept:"HR",courseIds:["c3","c4"],certDate:"2024-08-10",certNo:"CERT-2024-008",active:true,bio:"HR Business Partner 7 ปี",competencies:{การนำเสนอ:5,การถามคำถาม:5,ความรู้เนื้อหา:4,การจัดการชั้นเรียน:5,การใช้สื่อ:3,"การให้ Feedback":5,ความตรงต่อเวลา:3}},
-];
-const SS=[
-  {id:"s1",trainerId:"tr1",courseId:"c1",date:`${yr}-${mo}-05`,location:"ห้องอบรม A",attendees:18,rating:4.6,ratingCount:15},
-  {id:"s2",trainerId:"tr2",courseId:"c1",date:`${yr}-${mo}-12`,location:"ห้องอบรม B",attendees:22,rating:4.2,ratingCount:20},
-  {id:"s3",trainerId:"tr2",courseId:"c2",date:`${yr-1}-11-20`,location:"ห้องอบรม A",attendees:15,rating:4.8,ratingCount:13},
-  {id:"s4",trainerId:"tr3",courseId:"c2",date:`${yr}-${mo}-28`,location:"Line 3",attendees:12,rating:0,ratingCount:0},
-  {id:"s5",trainerId:"tr4",courseId:"c4",date:`${yr-1}-12-05`,location:"ห้องอบรม C",attendees:30,rating:4.4,ratingCount:28},
-];
-
-// Storage helpers with fallback to localStorage
-const save=async(k,v)=>{
-  try{ if(window.storage) await window.storage.set(k,JSON.stringify(v),true); }catch(e){}
-  try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#FAF8F3;min-height:100vh}
+input,select,textarea,button{font-family:inherit}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
 };
-const load=async(k,fb)=>{
-  try{ if(window.storage){const r=await window.storage.get(k,true);if(r)return JSON.parse(r.value);} }catch(e){}
-  try{ const r=localStorage.getItem(k);if(r)return JSON.parse(r); }catch(e){}
-  return fb;
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+const { useState, useEffect, useRef } = React;
+const C = { N: "#0D1F3C", G: "#B8860B", GL: "#F5E6C0", BG: "#FAF8F3", MU: "#64748B", LN: "#E8E4DA", GR: "#15803D", GRB: "#DCFCE7", AM: "#B45309", AMB: "#FEF3C7", RD: "#B91C1C", RDB: "#FEE2E2", BL: "#1D4ED8", BLB: "#DBEAFE", PU: "#7C3AED" };
+const CAT = { Production: C.BL, Quality: C.GR, Safety: C.RD, HR: C.PU, Engineering: C.AM };
+const COMP = ["\u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E2A\u0E19\u0E2D", "\u0E01\u0E32\u0E23\u0E16\u0E32\u0E21\u0E04\u0E33\u0E16\u0E32\u0E21", "\u0E04\u0E27\u0E32\u0E21\u0E23\u0E39\u0E49\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E2B\u0E32", "\u0E01\u0E32\u0E23\u0E08\u0E31\u0E14\u0E01\u0E32\u0E23\u0E0A\u0E31\u0E49\u0E19\u0E40\u0E23\u0E35\u0E22\u0E19", "\u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E2A\u0E37\u0E48\u0E2D", "\u0E01\u0E32\u0E23\u0E43\u0E2B\u0E49 Feedback", "\u0E04\u0E27\u0E32\u0E21\u0E15\u0E23\u0E07\u0E15\u0E48\u0E2D\u0E40\u0E27\u0E25\u0E32"];
+const PIN = "1234";
+const IS = { width: "100%", padding: "8px 10px", borderRadius: 8, border: "1.5px solid " + C.LN, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: "#fff" };
+const yr = (/* @__PURE__ */ new Date()).getFullYear(), mo = String((/* @__PURE__ */ new Date()).getMonth() + 1).padStart(2, "0");
+const SC = [{ id: "c1", code: "KBN-001", name: "Kanban System", category: "Production", duration: 7, renewMonths: 24 }, { id: "c2", code: "5S-002", name: "5S & Workplace Org.", category: "Quality", duration: 7, renewMonths: 24 }, { id: "c3", code: "QCC-003", name: "QC Circle Basics", category: "Quality", duration: 14, renewMonths: 36 }, { id: "c4", code: "SAF-004", name: "Safety Awareness", category: "Safety", duration: 7, renewMonths: 12 }];
+const ST = [
+  { id: "tr1", name: "\u0E27\u0E23\u0E23\u0E13\u0E34\u0E20\u0E32 \u0E2A\u0E38\u0E02\u0E2A\u0E27\u0E31\u0E2A\u0E14\u0E34\u0E4C", dept: "Production", courseIds: ["c1"], certDate: "2025-02-14", certNo: "CERT-2025-001", active: true, bio: "\u0E1C\u0E39\u0E49\u0E40\u0E0A\u0E35\u0E48\u0E22\u0E27\u0E0A\u0E32\u0E0D Lean & Kanban 5+ \u0E1B\u0E35", photo: "", competencies: { \u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E2A\u0E19\u0E2D: 4, \u0E01\u0E32\u0E23\u0E16\u0E32\u0E21\u0E04\u0E33\u0E16\u0E32\u0E21: 4, \u0E04\u0E27\u0E32\u0E21\u0E23\u0E39\u0E49\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E2B\u0E32: 5, \u0E01\u0E32\u0E23\u0E08\u0E31\u0E14\u0E01\u0E32\u0E23\u0E0A\u0E31\u0E49\u0E19\u0E40\u0E23\u0E35\u0E22\u0E19: 4, \u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E2A\u0E37\u0E48\u0E2D: 3, "\u0E01\u0E32\u0E23\u0E43\u0E2B\u0E49 Feedback": 4, \u0E04\u0E27\u0E32\u0E21\u0E15\u0E23\u0E07\u0E15\u0E48\u0E2D\u0E40\u0E27\u0E25\u0E32: 5 } },
+  { id: "tr2", name: "\u0E18\u0E19\u0E32\u0E01\u0E23 \u0E1E\u0E31\u0E12\u0E19\u0E32\u0E18\u0E23", dept: "QA", courseIds: ["c1", "c2"], certDate: "2025-02-14", certNo: "CERT-2025-002", active: true, bio: "\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23\u0E14\u0E49\u0E32\u0E19 Quality & Production", photo: "", competencies: { \u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E2A\u0E19\u0E2D: 5, \u0E01\u0E32\u0E23\u0E16\u0E32\u0E21\u0E04\u0E33\u0E16\u0E32\u0E21: 3, \u0E04\u0E27\u0E32\u0E21\u0E23\u0E39\u0E49\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E2B\u0E32: 5, \u0E01\u0E32\u0E23\u0E08\u0E31\u0E14\u0E01\u0E32\u0E23\u0E0A\u0E31\u0E49\u0E19\u0E40\u0E23\u0E35\u0E22\u0E19: 4, \u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E2A\u0E37\u0E48\u0E2D: 4, "\u0E01\u0E32\u0E23\u0E43\u0E2B\u0E49 Feedback": 3, \u0E04\u0E27\u0E32\u0E21\u0E15\u0E23\u0E07\u0E15\u0E48\u0E2D\u0E40\u0E27\u0E25\u0E32: 4 } },
+  { id: "tr3", name: "\u0E2A\u0E34\u0E23\u0E34\u0E21\u0E32 \u0E40\u0E08\u0E23\u0E34\u0E0D\u0E1C\u0E25", dept: "Logistics", courseIds: ["c2"], certDate: "2025-03-01", certNo: "CERT-2025-003", active: true, bio: "\u0E40\u0E0A\u0E35\u0E48\u0E22\u0E27\u0E0A\u0E32\u0E0D 5S \u0E23\u0E30\u0E14\u0E31\u0E1A Advanced", photo: "", competencies: { \u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E2A\u0E19\u0E2D: 3, \u0E01\u0E32\u0E23\u0E16\u0E32\u0E21\u0E04\u0E33\u0E16\u0E32\u0E21: 4, \u0E04\u0E27\u0E32\u0E21\u0E23\u0E39\u0E49\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E2B\u0E32: 4, \u0E01\u0E32\u0E23\u0E08\u0E31\u0E14\u0E01\u0E32\u0E23\u0E0A\u0E31\u0E49\u0E19\u0E40\u0E23\u0E35\u0E22\u0E19: 5, \u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E2A\u0E37\u0E48\u0E2D: 4, "\u0E01\u0E32\u0E23\u0E43\u0E2B\u0E49 Feedback": 5, \u0E04\u0E27\u0E32\u0E21\u0E15\u0E23\u0E07\u0E15\u0E48\u0E2D\u0E40\u0E27\u0E25\u0E32: 4 } },
+  { id: "tr4", name: "\u0E01\u0E34\u0E15\u0E15\u0E34\u0E1E\u0E07\u0E29\u0E4C \u0E41\u0E2A\u0E07\u0E2A\u0E27\u0E48\u0E32\u0E07", dept: "HR", courseIds: ["c3", "c4"], certDate: "2024-08-10", certNo: "CERT-2024-008", active: true, bio: "HR Business Partner 7 \u0E1B\u0E35", photo: "", competencies: { \u0E01\u0E32\u0E23\u0E19\u0E33\u0E40\u0E2A\u0E19\u0E2D: 5, \u0E01\u0E32\u0E23\u0E16\u0E32\u0E21\u0E04\u0E33\u0E16\u0E32\u0E21: 5, \u0E04\u0E27\u0E32\u0E21\u0E23\u0E39\u0E49\u0E40\u0E19\u0E37\u0E49\u0E2D\u0E2B\u0E32: 4, \u0E01\u0E32\u0E23\u0E08\u0E31\u0E14\u0E01\u0E32\u0E23\u0E0A\u0E31\u0E49\u0E19\u0E40\u0E23\u0E35\u0E22\u0E19: 5, \u0E01\u0E32\u0E23\u0E43\u0E0A\u0E49\u0E2A\u0E37\u0E48\u0E2D: 3, "\u0E01\u0E32\u0E23\u0E43\u0E2B\u0E49 Feedback": 5, \u0E04\u0E27\u0E32\u0E21\u0E15\u0E23\u0E07\u0E15\u0E48\u0E2D\u0E40\u0E27\u0E25\u0E32: 3 } }
+];
+const SS = [{ id: "s1", trainerId: "tr1", courseId: "c1", date: `${yr}-${mo}-05`, location: "\u0E2B\u0E49\u0E2D\u0E07\u0E2D\u0E1A\u0E23\u0E21 A", attendees: 18, rating: 4.6, ratingCount: 15 }, { id: "s2", trainerId: "tr2", courseId: "c1", date: `${yr}-${mo}-12`, location: "\u0E2B\u0E49\u0E2D\u0E07\u0E2D\u0E1A\u0E23\u0E21 B", attendees: 22, rating: 4.2, ratingCount: 20 }, { id: "s3", trainerId: "tr2", courseId: "c2", date: `${yr - 1}-11-20`, location: "\u0E2B\u0E49\u0E2D\u0E07\u0E2D\u0E1A\u0E23\u0E21 A", attendees: 15, rating: 4.8, ratingCount: 13 }, { id: "s4", trainerId: "tr3", courseId: "c2", date: `${yr}-${mo}-28`, location: "Line 3", attendees: 12, rating: 0, ratingCount: 0 }, { id: "s5", trainerId: "tr4", courseId: "c4", date: `${yr - 1}-12-05`, location: "\u0E2B\u0E49\u0E2D\u0E07\u0E2D\u0E1A\u0E23\u0E21 C", attendees: 30, rating: 4.4, ratingCount: 28 }];
+const sv = (k, v) => {
+  try {
+    localStorage.setItem(k, JSON.stringify(v));
+  } catch (e) {
+  }
 };
-const uid=()=>"x"+Date.now().toString(36)+Math.random().toString(36).slice(2,4);
-const devKey=()=>{let k=localStorage.getItem("dtk");if(!k){k=uid();localStorage.setItem("dtk",k);}return k;};
-const avgR=(ss,tid)=>{const s=ss.filter(x=>x.trainerId===tid&&x.ratingCount>0);return s.length?(s.reduce((a,x)=>a+x.rating,0)/s.length).toFixed(1):null;};
-const totalH=(ss,cs,tid)=>ss.filter(x=>x.trainerId===tid).reduce((a,s)=>{const c=cs.find(x=>x.id===s.courseId);return a+(c?c.duration:7);},0);
-const tScore=(t,ss,cs)=>{
-  const h=Math.min(totalH(ss,cs,t.id),100);
-  const r=parseFloat(avgR(ss,t.id)||0)*20;
-  const ce=t.courseIds.length*10;
-  const co=COMP.reduce((a,k)=>a+(t.competencies?.[k]||0),0)/(COMP.length*5)*30;
-  return Math.round(h*.3+r*.3+ce*.2+co*.2);
+const ld = (k, fb) => {
+  try {
+    const r = localStorage.getItem(k);
+    return r ? JSON.parse(r) : fb;
+  } catch (e) {
+    return fb;
+  }
 };
-const mLeft=(d,m)=>Math.round((new Date(d).setMonth(new Date(d).getMonth()+m)-Date.now())/(1000*60*60*24*30));
-const eb=m=>m<0?{lb:"หมดอายุ",c:C.RD,bg:C.RDB}:m<3?{lb:m+"เดือน",c:C.AM,bg:C.AMB}:{lb:m+"เดือน",c:C.GR,bg:C.GRB};
-
-// UI primitives
-function Av({name="?",size=40}){
-  const ini=name.split(" ").map(w=>w[0]).join("").slice(0,2);
-  const hue=[...name].reduce((a,c)=>a+c.charCodeAt(0),0)%360;
-  return <div style={{width:size,height:size,borderRadius:"50%",background:`hsl(${hue},45%,38%)`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontWeight:700,fontSize:size*.3,flexShrink:0}}>{ini}</div>;
+const uid = () => "x" + Date.now().toString(36) + Math.random().toString(36).slice(2, 4);
+const getDK = () => {
+  let k = localStorage.getItem("dtk");
+  if (!k) {
+    k = uid();
+    localStorage.setItem("dtk", k);
+  }
+  return k;
+};
+const avgR = (ss, tid) => {
+  const s = ss.filter((x) => x.trainerId === tid && x.ratingCount > 0);
+  return s.length ? (s.reduce((a, x) => a + x.rating, 0) / s.length).toFixed(1) : null;
+};
+const totalH = (ss, cs, tid) => ss.filter((x) => x.trainerId === tid).reduce((a, s) => {
+  const c = cs.find((x) => x.id === s.courseId);
+  return a + (c ? c.duration : 7);
+}, 0);
+const tScore = (t, ss, cs) => {
+  const h = Math.min(totalH(ss, cs, t.id), 100);
+  const r = parseFloat(avgR(ss, t.id) || 0) * 20;
+  const ce = t.courseIds.length * 10;
+  const co = COMP.reduce((a, k) => {
+    var _a;
+    return a + (((_a = t.competencies) == null ? void 0 : _a[k]) || 0);
+  }, 0) / (COMP.length * 5) * 30;
+  return Math.round(h * 0.3 + r * 0.3 + ce * 0.2 + co * 0.2);
+};
+const mLeft = (d, m) => Math.round((new Date(d).setMonth(new Date(d).getMonth() + m) - Date.now()) / (1e3 * 60 * 60 * 24 * 30));
+const eb = (m) => m < 0 ? { lb: "\u0E2B\u0E21\u0E14\u0E2D\u0E32\u0E22\u0E38", c: C.RD, bg: C.RDB } : m < 3 ? { lb: m + "\u0E40\u0E14\u0E37\u0E2D\u0E19", c: C.AM, bg: C.AMB } : { lb: m + "\u0E40\u0E14\u0E37\u0E2D\u0E19", c: C.GR, bg: C.GRB };
+const toB64 = (file) => new Promise((res) => {
+  const r = new FileReader();
+  r.onload = (e) => res(e.target.result);
+  r.readAsDataURL(file);
+});
+function Av({ name = "?", photo = "", size = 40 }) {
+  const ini = name.split(" ").map((w) => w[0]).join("").slice(0, 2);
+  const hue = [...name].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+  if (photo) return /* @__PURE__ */ React.createElement("img", { src: photo, alt: name, style: { width: size, height: size, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid " + C.LN } });
+  return /* @__PURE__ */ React.createElement("div", { style: { width: size, height: size, borderRadius: "50%", background: `hsl(${hue},45%,38%)`, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: size * 0.32, flexShrink: 0 } }, ini);
 }
-function Modal({onClose,children,w=500}){
-  return <div onClick={e=>e.target===e.currentTarget&&onClose()} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center",padding:12}}>
-    <div style={{background:"#fff",borderRadius:14,maxWidth:w,width:"100%",maxHeight:"90vh",overflowY:"auto"}}>{children}</div>
-  </div>;
-}
-function MHead({title,onClose}){
-  return <div style={{background:C.N,padding:"12px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",borderRadius:"14px 14px 0 0",position:"sticky",top:0}}>
-    <b style={{color:"#fff",fontSize:14}}>{title}</b>
-    <button onClick={onClose} style={{background:"rgba(255,255,255,.15)",border:"none",color:"#fff",borderRadius:6,width:26,height:26,cursor:"pointer",fontSize:16,lineHeight:"26px"}}>×</button>
-  </div>;
-}
-function FL({label,req,children}){
-  return <div style={{marginBottom:10}}>
-    <label style={{display:"block",fontSize:11,fontWeight:700,color:C.N,marginBottom:3,textTransform:"uppercase"}}>{label}{req&&<span style={{color:C.RD}}> *</span>}</label>
-    {children}
-  </div>;
-}
-function Btn({onClick,disabled,variant="dark",children,style={}}){
-  const bg=disabled?"#ccc":variant==="dark"?C.N:variant==="red"?C.RD:variant==="green"?C.GR:C.N;
-  return <button onClick={disabled?undefined:onClick} style={{padding:"7px 14px",borderRadius:8,border:"none",background:bg,color:"#fff",fontWeight:700,fontSize:12,cursor:disabled?"not-allowed":"pointer",fontFamily:"inherit",...style}}>{children}</button>;
-}
-
-// ---- FORMS ----
-function TrainerForm({trainer,courses,onSave,onDel,onClose}){
-  const init={name:"",dept:"",certNo:"",certDate:"",bio:"",active:true,courseIds:[],competencies:{}};
-  const [f,sf]=useState(trainer??init);
-  const set=(k,v)=>sf(x=>({...x,[k]:v}));
-  const togC=id=>sf(x=>({...x,courseIds:x.courseIds.includes(id)?x.courseIds.filter(i=>i!==id):[...x.courseIds,id]}));
-  const setComp=(k,v)=>sf(x=>({...x,competencies:{...x.competencies,[k]:v}}));
-  const ok=f.name&&f.dept&&f.certNo&&f.certDate;
-  return <div style={{padding:16}}>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 10px"}}>
-      <FL label="ชื่อ-นามสกุล" req><input style={IS} value={f.name} onChange={e=>set("name",e.target.value)}/></FL>
-      <FL label="แผนก" req><input style={IS} value={f.dept} onChange={e=>set("dept",e.target.value)}/></FL>
-      <FL label="เลขที่ใบรับรอง" req><input style={IS} value={f.certNo} onChange={e=>set("certNo",e.target.value)} placeholder="CERT-2025-XXX"/></FL>
-      <FL label="วันที่ออกใบรับรอง" req><input style={IS} type="date" value={f.certDate} onChange={e=>set("certDate",e.target.value)}/></FL>
-    </div>
-    <FL label="Bio"><textarea style={{...IS,minHeight:55,resize:"vertical"}} value={f.bio} onChange={e=>set("bio",e.target.value)}/></FL>
-    <FL label="หลักสูตรที่สอนได้">
-      <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-        {courses.map(co=>{const on=f.courseIds.includes(co.id);return(
-          <button key={co.id} onClick={()=>togC(co.id)} style={{padding:"3px 10px",borderRadius:99,border:"1.5px solid "+(on?(CAT[co.category]||C.BL):C.LN),background:on?(CAT[co.category]||C.BL)+"22":"transparent",color:on?(CAT[co.category]||C.BL):C.MU,fontWeight:on?700:500,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
-            {co.code}
-          </button>);})}
-      </div>
-    </FL>
-    <FL label="สมรรถนะ (1–5)">
-      {COMP.map(k=>(
-        <div key={k} style={{display:"flex",alignItems:"center",gap:6,marginBottom:5}}>
-          <span style={{fontSize:12,color:"#333",width:130,flexShrink:0}}>{k}</span>
-          {[1,2,3,4,5].map(v=>{const on=(f.competencies?.[k]||0)>=v;return(
-            <button key={v} onClick={()=>setComp(k,v)} style={{width:26,height:26,borderRadius:5,border:"1.5px solid "+(on?C.G:C.LN),background:on?C.GL:"transparent",fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit",color:on?C.AM:C.MU}}>{v}</button>
-          );})}
-        </div>
-      ))}
-    </FL>
-    <FL label="สถานะ">
-      <div style={{display:"flex",gap:8}}>
-        {[["active","✅ Active"],[false,"❌ Inactive"]].map(([v,lb])=>(
-          <button key={String(v)} onClick={()=>set("active",v==="active")} style={{flex:1,padding:"6px 0",borderRadius:8,border:"1.5px solid "+(f.active===(v==="active")?(v==="active"?C.GR:C.RD):C.LN),background:f.active===(v==="active")?(v==="active"?C.GRB:C.RDB):"transparent",color:f.active===(v==="active")?(v==="active"?C.GR:C.RD):C.MU,fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>{lb}</button>
-        ))}
-      </div>
-    </FL>
-    <div style={{display:"flex",gap:8,marginTop:8}}>
-      {trainer?.id&&<button onClick={()=>onDel(trainer.id)} style={{padding:"7px 12px",borderRadius:8,border:"1.5px solid "+C.RD,background:C.RDB,color:C.RD,fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>🗑 ลบ</button>}
-      <button onClick={onClose} style={{flex:1,padding:"7px 0",borderRadius:8,border:"1.5px solid "+C.LN,background:"transparent",color:C.MU,cursor:"pointer",fontFamily:"inherit"}}>ยกเลิก</button>
-      <Btn onClick={()=>ok&&onSave({...f,id:trainer?.id||uid()})} disabled={!ok} style={{flex:2}}>💾 บันทึก</Btn>
-    </div>
-  </div>;
-}
-
-function CourseForm({course,onSave,onDel,onClose}){
-  const [f,sf]=useState(course??{code:"",name:"",category:"Production",duration:7,renewMonths:24,desc:""});
-  const set=(k,v)=>sf(x=>({...x,[k]:v}));
-  const ok=f.code&&f.name;
-  return <div style={{padding:16}}>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 10px"}}>
-      <FL label="รหัส" req><input style={IS} value={f.code} onChange={e=>set("code",e.target.value)} placeholder="KBN-001"/></FL>
-      <FL label="หมวดหมู่">
-        <select style={IS} value={f.category} onChange={e=>set("category",e.target.value)}>
-          {["Production","Quality","Safety","HR","Engineering"].map(c=><option key={c}>{c}</option>)}
-        </select>
-      </FL>
-      <FL label="ชื่อหลักสูตร" req><input style={IS} value={f.name} onChange={e=>set("name",e.target.value)}/></FL>
-      <FL label="ระยะเวลา (ชม.)"><input style={IS} type="number" value={f.duration} onChange={e=>set("duration",parseInt(e.target.value)||7)}/></FL>
-      <FL label="ต่ออายุทุก (เดือน)"><input style={IS} type="number" value={f.renewMonths} onChange={e=>set("renewMonths",parseInt(e.target.value)||24)}/></FL>
-    </div>
-    <FL label="คำอธิบาย"><textarea style={{...IS,minHeight:55,resize:"vertical"}} value={f.desc||""} onChange={e=>set("desc",e.target.value)}/></FL>
-    <div style={{display:"flex",gap:8,marginTop:8}}>
-      {course?.id&&<button onClick={()=>onDel(course.id)} style={{padding:"7px 12px",borderRadius:8,border:"1.5px solid "+C.RD,background:C.RDB,color:C.RD,fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>🗑 ลบ</button>}
-      <button onClick={onClose} style={{flex:1,padding:"7px 0",borderRadius:8,border:"1.5px solid "+C.LN,background:"transparent",color:C.MU,cursor:"pointer",fontFamily:"inherit"}}>ยกเลิก</button>
-      <Btn onClick={()=>ok&&onSave({...f,id:course?.id||uid()})} disabled={!ok} style={{flex:2}}>💾 บันทึก</Btn>
-    </div>
-  </div>;
-}
-
-function SessionForm({session,trainers,courses,onSave,onDel,onClose}){
-  const [f,sf]=useState(session??{trainerId:"",courseId:"",date:"",location:"",attendees:""});
-  const set=(k,v)=>sf(x=>({...x,[k]:v}));
-  const ok=f.trainerId&&f.courseId&&f.date&&f.location;
-  return <div style={{padding:16}}>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 10px"}}>
-      <FL label="วิทยากร" req>
-        <select style={IS} value={f.trainerId} onChange={e=>set("trainerId",e.target.value)}>
-          <option value="">— เลือกวิทยากร —</option>
-          {trainers.filter(t=>t.active).map(t=><option key={t.id} value={t.id}>{t.name}</option>)}
-        </select>
-      </FL>
-      <FL label="หลักสูตร" req>
-        <select style={IS} value={f.courseId} onChange={e=>set("courseId",e.target.value)}>
-          <option value="">— เลือกหลักสูตร —</option>
-          {courses.map(c=><option key={c.id} value={c.id}>{c.code} {c.name}</option>)}
-        </select>
-      </FL>
-      <FL label="วันที่" req><input style={IS} type="date" value={f.date} onChange={e=>set("date",e.target.value)}/></FL>
-      <FL label="จำนวนผู้เรียน"><input style={IS} type="number" value={f.attendees} onChange={e=>set("attendees",e.target.value)}/></FL>
-    </div>
-    <FL label="สถานที่" req><input style={IS} value={f.location} onChange={e=>set("location",e.target.value)} placeholder="ห้องอบรม A"/></FL>
-    <div style={{display:"flex",gap:8,marginTop:8}}>
-      {session?.id&&<button onClick={()=>onDel(session.id)} style={{padding:"7px 12px",borderRadius:8,border:"1.5px solid "+C.RD,background:C.RDB,color:C.RD,fontWeight:700,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>🗑 ลบ</button>}
-      <button onClick={onClose} style={{flex:1,padding:"7px 0",borderRadius:8,border:"1.5px solid "+C.LN,background:"transparent",color:C.MU,cursor:"pointer",fontFamily:"inherit"}}>ยกเลิก</button>
-      <Btn onClick={()=>ok&&onSave({...f,id:session?.id||uid(),rating:session?.rating||0,ratingCount:session?.ratingCount||0})} disabled={!ok} style={{flex:2}}>💾 บันทึก</Btn>
-    </div>
-  </div>;
-}
-
-// ---- HRD PANEL ----
-function HRD({data,setData,onClose}){
-  const {trainers,courses,sessions,bookings}=data;
-  const [tab,st]=useState("trainers");
-  const [eT,seT]=useState(null);
-  const [eC,seC]=useState(null);
-  const [eS,seS]=useState(null);
-  const [code,sc]=useState("");
-  const [msg,sm]=useState(null);
-  const pending=bookings.filter(b=>b.status==="pending").length;
-  const expiring=trainers.filter(t=>t.active).flatMap(t=>
-    t.courseIds.map(cid=>{const co=courses.find(x=>x.id===cid);if(!co)return null;const m=mLeft(t.certDate,co.renewMonths);return m<=3?{t,co,m}:null;}).filter(Boolean)
-  );
-  const TABS=[["trainers",`👤 วิทยากร`],["courses",`📚 หลักสูตร`],["sessions",`📅 Class`],["bookings",`📩 จอง${pending>0?" ("+pending+")":""}`],["expiry",`⏰ ต่ออายุ${expiring.length>0?" ("+expiring.length+")":""}`]];
-
-  const saveT=async t=>{const up=trainers.some(x=>x.id===t.id)?trainers.map(x=>x.id===t.id?t:x):[...trainers,t];await save("v3_trainers",up);setData(d=>({...d,trainers:up}));seT(null);};
-  const delT=async id=>{if(!confirm("ลบวิทยากรนี้?"))return;const up=trainers.filter(x=>x.id!==id);await save("v3_trainers",up);setData(d=>({...d,trainers:up}));seT(null);};
-  const saveC=async c=>{const up=courses.some(x=>x.id===c.id)?courses.map(x=>x.id===c.id?c:x):[...courses,c];await save("v3_courses",up);setData(d=>({...d,courses:up}));seC(null);};
-  const delC=async id=>{if(!confirm("ลบหลักสูตรนี้?"))return;const up=courses.filter(x=>x.id!==id);await save("v3_courses",up);setData(d=>({...d,courses:up}));seC(null);};
-  const saveS=async s=>{const up=sessions.some(x=>x.id===s.id)?sessions.map(x=>x.id===s.id?s:x):[...sessions,s];await save("v3_sessions",up);setData(d=>({...d,sessions:up}));seS(null);};
-  const delS=async id=>{if(!confirm("ลบ Class นี้?"))return;const up=sessions.filter(x=>x.id!==id);await save("v3_sessions",up);setData(d=>({...d,sessions:up}));seS(null);};
-  const confirmBook=async b=>{
-    const upB=bookings.map(x=>x.id===b.id?{...x,status:"confirmed"}:x);
-    const newS={id:uid(),trainerId:b.trainerId,courseId:b.courseId,date:b.date,location:b.dept,attendees:Number(b.attendees)||0,rating:0,ratingCount:0};
-    const upS=[...sessions,newS];
-    await save("v3_bookings",upB);await save("v3_sessions",upS);
-    setData(d=>({...d,bookings:upB,sessions:upS}));
+function PhotoUpload({ value, onChange }) {
+  const ref = useRef();
+  const handle = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const b = await toB64(f);
+    onChange(b);
   };
-  const renewCert=async tid=>{const up=trainers.map(t=>t.id===tid?{...t,certDate:new Date().toISOString().slice(0,10)}:t);await save("v3_trainers",up);setData(d=>({...d,trainers:up}));};
-  const mkCode=(sid,stars)=>{const s6=sid.slice(-6).toUpperCase();let h=0;for(const c of sid+"|"+stars)h=(h*31+c.charCodeAt(0))>>>0;return"DTT-"+s6+"-"+stars+"-"+h.toString(36).toUpperCase().slice(-4);};
-  const redeem=async()=>{
-    const m=code.trim().toUpperCase().match(/^DTT-([A-Z0-9]+)-([1-5])-([A-Z0-9]+)$/);
-    if(!m){sm({ok:false,t:"Code ไม่ถูกต้อง"});return;}
-    const[,s6,sStr]=m;const stars=parseInt(sStr);
-    const sess=sessions.find(s=>s.id.slice(-6).toUpperCase()===s6);
-    if(!sess){sm({ok:false,t:"ไม่พบ Session"});return;}
-    if(mkCode(sess.id,stars).split("-")[3]!==m[3]){sm({ok:false,t:"Code ไม่ถูกต้อง"});return;}
-    const allR=await load("v3_ratings",[]);
-    if(allR.some(r=>r.code===code.trim().toUpperCase())){sm({ok:false,t:"Code ใช้แล้ว"});return;}
-    const upR=[...allR,{sessionId:sess.id,stars,code:code.trim().toUpperCase(),ts:Date.now()}];
-    const sR=upR.filter(r=>r.sessionId===sess.id);
-    const avg=parseFloat((sR.reduce((a,r)=>a+r.stars,0)/sR.length).toFixed(1));
-    const upS=sessions.map(s=>s.id===sess.id?{...s,rating:avg,ratingCount:sR.length}:s);
-    await save("v3_ratings",upR);await save("v3_sessions",upS);
-    setData(d=>({...d,sessions:upS}));
-    sm({ok:true,t:"✅ บันทึกแล้ว ★"+stars});sc("");
-  };
-
-  return <Modal onClose={onClose} w={580}>
-    <MHead title="⚙️ HRD Management" onClose={onClose}/>
-    <div style={{padding:16}}>
-      {/* Rating code box */}
-      <div style={{background:C.N,borderRadius:10,padding:12,marginBottom:14}}>
-        <div style={{fontSize:11,color:C.GL,fontWeight:700,marginBottom:7}}>🎫 รับ Rating Code</div>
-        <div style={{display:"flex",gap:8}}>
-          <input value={code} onChange={e=>{sc(e.target.value.toUpperCase());sm(null);}} placeholder="DTT-XXXXXX-5-XXXX"
-            style={{flex:1,padding:"7px 10px",borderRadius:7,border:"1px solid rgba(255,255,255,.2)",background:"rgba(255,255,255,.1)",color:"#fff",fontSize:13,fontFamily:"inherit",outline:"none"}}/>
-          <Btn onClick={redeem} style={{background:C.G}}>รับ</Btn>
-        </div>
-        {msg&&<div style={{marginTop:5,fontSize:12,fontWeight:700,color:msg.ok?"#86EFAC":"#FCA5A5"}}>{msg.t}</div>}
-      </div>
-      {/* Tabs */}
-      <div style={{display:"flex",gap:2,overflowX:"auto",marginBottom:12}}>
-        {TABS.map(([k,lb])=><button key={k} onClick={()=>st(k)} style={{flexShrink:0,padding:"5px 10px",borderRadius:"7px 7px 0 0",border:"none",cursor:"pointer",fontFamily:"inherit",fontSize:11,fontWeight:600,background:tab===k?C.N:C.BG,color:tab===k?"#fff":C.MU}}>{lb}</button>)}
-      </div>
-
-      {/* TRAINERS */}
-      {tab==="trainers"&&<div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <b style={{color:C.N,fontSize:13}}>วิทยากรทั้งหมด</b>
-          <Btn onClick={()=>seT({})}>+ เพิ่มวิทยากร</Btn>
-        </div>
-        {trainers.map(t=><div key={t.id} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 11px",marginBottom:6,background:C.BG,borderRadius:8,border:"1px solid "+C.LN}}>
-          <Av name={t.name} size={34}/>
-          <div style={{flex:1}}><div style={{fontWeight:700,color:C.N,fontSize:13}}>{t.name}</div><div style={{fontSize:11,color:C.MU}}>{t.dept} · {t.certNo}</div></div>
-          <span style={{fontSize:10,padding:"2px 7px",borderRadius:99,fontWeight:700,background:t.active?C.GRB:C.RDB,color:t.active?C.GR:C.RD}}>{t.active?"Active":"Inactive"}</span>
-          <button onClick={()=>seT(t)} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+C.LN,background:"#fff",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✏️</button>
-        </div>)}
-        {eT!==null&&<Modal onClose={()=>seT(null)} w={520}><MHead title={eT.id?"✏️ แก้ไขวิทยากร":"➕ เพิ่มวิทยากร"} onClose={()=>seT(null)}/><TrainerForm trainer={eT.id?eT:undefined} courses={courses} onSave={saveT} onDel={delT} onClose={()=>seT(null)}/></Modal>}
-      </div>}
-
-      {/* COURSES */}
-      {tab==="courses"&&<div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <b style={{color:C.N,fontSize:13}}>หลักสูตรทั้งหมด</b>
-          <Btn onClick={()=>seC({})}>+ เพิ่มหลักสูตร</Btn>
-        </div>
-        {courses.map(co=><div key={co.id} style={{display:"flex",alignItems:"center",gap:9,padding:"9px 11px",marginBottom:6,background:C.BG,borderRadius:8,border:"1px solid "+C.LN}}>
-          <span style={{fontSize:11,background:(CAT[co.category]||C.BL)+"22",color:CAT[co.category]||C.BL,padding:"2px 8px",borderRadius:4,fontWeight:700,flexShrink:0}}>{co.code}</span>
-          <div style={{flex:1}}><div style={{fontWeight:700,color:C.N,fontSize:13}}>{co.name}</div><div style={{fontSize:11,color:C.MU}}>{co.category} · {co.duration}ชม. · ต่ออายุ {co.renewMonths} เดือน</div></div>
-          <button onClick={()=>seC(co)} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+C.LN,background:"#fff",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✏️</button>
-        </div>)}
-        {eC!==null&&<Modal onClose={()=>seC(null)} w={460}><MHead title={eC.id?"✏️ แก้ไขหลักสูตร":"➕ เพิ่มหลักสูตร"} onClose={()=>seC(null)}/><CourseForm course={eC.id?eC:undefined} onSave={saveC} onDel={delC} onClose={()=>seC(null)}/></Modal>}
-      </div>}
-
-      {/* SESSIONS */}
-      {tab==="sessions"&&<div>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <b style={{color:C.N,fontSize:13}}>Class ทั้งหมด</b>
-          <Btn onClick={()=>seS({})}>+ บันทึก Class</Btn>
-        </div>
-        {[...sessions].sort((a,b)=>b.date.localeCompare(a.date)).map(s=>{
-          const tr=trainers.find(x=>x.id===s.trainerId);const co=courses.find(x=>x.id===s.courseId);
-          return <div key={s.id} style={{display:"flex",alignItems:"center",gap:8,padding:"9px 11px",marginBottom:6,background:C.BG,borderRadius:8,border:"1px solid "+C.LN}}>
-            <div style={{flex:1}}><div style={{fontWeight:700,color:C.N,fontSize:13}}>{tr?.name||"—"}</div><div style={{fontSize:11,color:C.MU}}>📅 {s.date} · {co?.code} · 📍 {s.location} · 👥 {s.attendees||0}</div></div>
-            {s.ratingCount>0?<span style={{fontSize:12,color:C.AM,fontWeight:700}}>★{s.rating}</span>:<span style={{fontSize:11,color:C.MU}}>—</span>}
-            <button onClick={()=>seS(s)} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+C.LN,background:"#fff",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✏️</button>
-          </div>;})}
-        {eS!==null&&<Modal onClose={()=>seS(null)} w={460}><MHead title={eS.id?"✏️ แก้ไข Class":"➕ บันทึก Class"} onClose={()=>seS(null)}/><SessionForm session={eS.id?eS:undefined} trainers={trainers} courses={courses} onSave={saveS} onDel={delS} onClose={()=>seS(null)}/></Modal>}
-      </div>}
-
-      {/* BOOKINGS */}
-      {tab==="bookings"&&<div style={{paddingTop:4}}>
-        {bookings.length===0?<div style={{textAlign:"center",padding:32,color:C.MU}}>ยังไม่มีคำขอ</div>
-          :bookings.map(b=>{
-            const tr=trainers.find(x=>x.id===b.trainerId);const co=courses.find(x=>x.id===b.courseId);const done=b.status==="confirmed";
-            return <div key={b.id} style={{background:done?C.GRB+"44":"#fff",borderRadius:9,padding:"11px 13px",marginBottom:8,border:"1.5px solid "+(done?C.GR+"44":C.LN)}}>
-              <div style={{display:"flex",gap:8,alignItems:"flex-start"}}>
-                <div style={{flex:1}}><div style={{fontWeight:700,color:C.N,fontSize:13}}>{b.name} ({b.dept})</div><div style={{fontSize:12,color:"#444",marginTop:1}}>{tr?.name} · {co?.name}</div><div style={{fontSize:11,color:C.MU}}>📅 {b.date} · 👥 {b.attendees||"?"} คน</div></div>
-                <div style={{display:"flex",gap:5,alignItems:"center"}}>
-                  <span style={{fontSize:10,padding:"2px 6px",borderRadius:99,fontWeight:700,background:done?C.GRB:C.AMB,color:done?C.GR:C.AM}}>{done?"ยืนยันแล้ว":"รอดำเนินการ"}</span>
-                  {!done&&<Btn onClick={()=>confirmBook(b)} variant="green" style={{fontSize:11,padding:"4px 9px"}}>✅ ยืนยัน</Btn>}
-                </div>
-              </div>
-            </div>;
-          })}
-      </div>}
-
-      {/* EXPIRY */}
-      {tab==="expiry"&&<div style={{paddingTop:4}}>
-        {expiring.length===0?<div style={{textAlign:"center",padding:24,color:C.GR}}>✅ ไม่มีรายการใกล้หมดอายุ</div>
-          :expiring.map(({t,co,m},i)=>{const s=eb(m);return(
-            <div key={i} style={{background:"#fff",borderRadius:9,padding:11,marginBottom:8,border:"1.5px solid "+s.c+"44"}}>
-              <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:7}}>
-                <Av name={t.name} size={32}/>
-                <div><div style={{fontWeight:700,color:C.N,fontSize:13}}>{t.name}</div><div style={{fontSize:11,color:C.MU}}>{co.name}</div></div>
-                <span style={{marginLeft:"auto",fontSize:11,background:s.bg,color:s.c,padding:"2px 8px",borderRadius:99,fontWeight:700}}>{m<0?"หมดอายุ":"เหลือ "+s.lb}</span>
-              </div>
-              <Btn onClick={()=>renewCert(t.id)} style={{width:"100%",fontSize:12}}>🔄 ต่ออายุวันนี้</Btn>
-            </div>);})}
-      </div>}
-    </div>
-  </Modal>;
+  return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, value ? /* @__PURE__ */ React.createElement("img", { src: value, alt: "photo", style: { width: 64, height: 64, borderRadius: "50%", objectFit: "cover", border: "2px solid " + C.LN } }) : /* @__PURE__ */ React.createElement("div", { style: { width: 64, height: 64, borderRadius: "50%", background: C.BG, border: "2px dashed " + C.LN, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 } }, "\u{1F4F7}"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => ref.current.click(), style: { padding: "5px 14px", borderRadius: 7, border: "1.5px solid " + C.N, background: "transparent", color: C.N, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, value ? "\u{1F504} \u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u0E23\u0E39\u0E1B" : "\u{1F4E4} \u0E2D\u0E31\u0E1B\u0E42\u0E2B\u0E25\u0E14\u0E23\u0E39\u0E1B"), value && /* @__PURE__ */ React.createElement("button", { type: "button", onClick: () => onChange(""), style: { marginLeft: 6, padding: "5px 10px", borderRadius: 7, border: "1.5px solid " + C.RD, background: C.RDB, color: C.RD, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "\u0E25\u0E1A"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: C.MU, marginTop: 3 } }, "JPG / PNG \xB7 \u0E41\u0E19\u0E30\u0E19\u0E33 200\xD7200px"), /* @__PURE__ */ React.createElement("input", { ref, type: "file", accept: "image/*", onChange: handle, style: { display: "none" } })));
 }
-
-// ---- MAIN APP ----
-function App(){
-  const [D,sD]=useState({trainers:[],courses:[],sessions:[],bookings:[],ratings:[]});
-  const [ok,sok]=useState(false);
-  const [tab,st]=useState("dir");
-  const [search,ss]=useState("");
-  const [cat,scat]=useState("ทั้งหมด");
-  const [profile,sp]=useState(null);
-  const [book,sb]=useState(null);
-  const [bookOK,sbOK]=useState(null);
-  const [rate,sr]=useState(null);
-  const [hrd,sh]=useState(false);
-  const [pin,spm]=useState(false);
-  const [pv,spv]=useState("");
-  const [pe,spe]=useState(false);
-
-  useEffect(()=>{(async()=>{
-    try{
-      let t=await load("v3_trainers",null);if(!t){t=ST;await save("v3_trainers",t);}
-      let c=await load("v3_courses",null);if(!c){c=SC;await save("v3_courses",c);}
-      let s=await load("v3_sessions",null);if(!s){s=SS;await save("v3_sessions",s);}
-      let b=await load("v3_bookings",null);if(!b){b=[];await save("v3_bookings",b);}
-      let r=await load("v3_ratings",[]);
-      sD({trainers:t,courses:c,sessions:s,bookings:b,ratings:r});
-    }catch(e){sD({trainers:ST,courses:SC,sessions:SS,bookings:[],ratings:[]});}
+function Modal({ onClose, children, w = 500 }) {
+  return /* @__PURE__ */ React.createElement("div", { onClick: (e) => e.target === e.currentTarget && onClose(), style: { position: "fixed", inset: 0, background: "rgba(0,0,0,.52)", zIndex: 1e3, display: "flex", alignItems: "center", justifyContent: "center", padding: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 14, maxWidth: w, width: "100%", maxHeight: "90vh", overflowY: "auto" } }, children));
+}
+function MH({ title, onClose }) {
+  return /* @__PURE__ */ React.createElement("div", { style: { background: C.N, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderRadius: "14px 14px 0 0", position: "sticky", top: 0, zIndex: 2 } }, /* @__PURE__ */ React.createElement("b", { style: { color: "#fff", fontSize: 14 } }, title), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { background: "rgba(255,255,255,.15)", border: "none", color: "#fff", borderRadius: 6, width: 28, height: 28, cursor: "pointer", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center" } }, "\xD7"));
+}
+function FL({ label, req, children }) {
+  return /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 10 } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontSize: 11, fontWeight: 700, color: C.N, marginBottom: 3, textTransform: "uppercase" } }, label, req && /* @__PURE__ */ React.createElement("span", { style: { color: C.RD } }, " *")), children);
+}
+function Btn({ onClick, disabled, variant = "dark", style = {}, children }) {
+  const bg = { dark: C.N, green: C.GR, gold: C.G }[variant] || C.N;
+  return /* @__PURE__ */ React.createElement("button", { onClick: disabled ? void 0 : onClick, style: __spreadValues({ padding: "7px 14px", borderRadius: 8, border: "none", background: disabled ? "#ccc" : bg, color: "#fff", fontWeight: 700, fontSize: 12, cursor: disabled ? "not-allowed" : "pointer", fontFamily: "inherit" }, style) }, children);
+}
+function TForm({ trainer, courses, onSave, onDel, onClose }) {
+  const [f, sf] = useState(trainer != null ? trainer : { name: "", dept: "", certNo: "", certDate: "", bio: "", photo: "", active: true, courseIds: [], competencies: {} });
+  const set = (k, v) => sf((x) => __spreadProps(__spreadValues({}, x), { [k]: v }));
+  const togC = (id) => sf((x) => __spreadProps(__spreadValues({}, x), { courseIds: x.courseIds.includes(id) ? x.courseIds.filter((i) => i !== id) : [...x.courseIds, id] }));
+  const sComp = (k, v) => sf((x) => __spreadProps(__spreadValues({}, x), { competencies: __spreadProps(__spreadValues({}, x.competencies), { [k]: v }) }));
+  const ok = f.name && f.dept && f.certNo && f.certDate;
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: 16 } }, /* @__PURE__ */ React.createElement(FL, { label: "\u0E23\u0E39\u0E1B\u0E20\u0E32\u0E1E\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23" }, /* @__PURE__ */ React.createElement(PhotoUpload, { value: f.photo || "", onChange: (v) => set("photo", v) })), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" } }, /* @__PURE__ */ React.createElement(FL, { label: "\u0E0A\u0E37\u0E48\u0E2D-\u0E19\u0E32\u0E21\u0E2A\u0E01\u0E38\u0E25", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.name, onChange: (e) => set("name", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E41\u0E1C\u0E19\u0E01", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.dept, onChange: (e) => set("dept", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E40\u0E25\u0E02\u0E17\u0E35\u0E48\u0E43\u0E1A\u0E23\u0E31\u0E1A\u0E23\u0E2D\u0E07", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.certNo, onChange: (e) => set("certNo", e.target.value), placeholder: "CERT-2025-XXX" })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48\u0E2D\u0E2D\u0E01\u0E43\u0E1A\u0E23\u0E31\u0E1A\u0E23\u0E2D\u0E07", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "date", value: f.certDate, onChange: (e) => set("certDate", e.target.value) }))), /* @__PURE__ */ React.createElement(FL, { label: "Bio / \u0E04\u0E27\u0E32\u0E21\u0E40\u0E0A\u0E35\u0E48\u0E22\u0E27\u0E0A\u0E32\u0E0D" }, /* @__PURE__ */ React.createElement("textarea", { style: __spreadProps(__spreadValues({}, IS), { minHeight: 55, resize: "vertical" }), value: f.bio, onChange: (e) => set("bio", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23\u0E17\u0E35\u0E48\u0E2A\u0E2D\u0E19\u0E44\u0E14\u0E49" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } }, courses.map((co) => {
+    const on = f.courseIds.includes(co.id);
+    return /* @__PURE__ */ React.createElement("button", { key: co.id, onClick: () => togC(co.id), style: { padding: "4px 12px", borderRadius: 99, border: "1.5px solid " + (on ? CAT[co.category] || C.BL : C.LN), background: on ? (CAT[co.category] || C.BL) + "20" : "transparent", color: on ? CAT[co.category] || C.BL : C.MU, fontWeight: on ? 700 : 500, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, co.code, " \u2013 ", co.name);
+  }))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2A\u0E21\u0E23\u0E23\u0E16\u0E19\u0E30 (1\u20135)" }, COMP.map((k) => /* @__PURE__ */ React.createElement("div", { key: k, style: { display: "flex", alignItems: "center", gap: 6, marginBottom: 6 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: "#333", width: 135, flexShrink: 0 } }, k), [1, 2, 3, 4, 5].map((v) => {
+    var _a;
+    const on = (((_a = f.competencies) == null ? void 0 : _a[k]) || 0) >= v;
+    return /* @__PURE__ */ React.createElement("button", { key: v, onClick: () => sComp(k, v), style: { width: 27, height: 27, borderRadius: 5, border: "1.5px solid " + (on ? C.G : C.LN), background: on ? C.GL : "transparent", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit", color: on ? C.AM : C.MU } }, v);
+  })))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2A\u0E16\u0E32\u0E19\u0E30" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8 } }, [["active", "\u2705 Active"], [false, "\u274C Inactive"]].map(([v, lb]) => /* @__PURE__ */ React.createElement("button", { key: String(v), onClick: () => set("active", v === "active"), style: { flex: 1, padding: "6px 0", borderRadius: 8, border: "1.5px solid " + (f.active === (v === "active") ? v === "active" ? C.GR : C.RD : C.LN), background: f.active === (v === "active") ? v === "active" ? C.GRB : C.RDB : "transparent", color: f.active === (v === "active") ? v === "active" ? C.GR : C.RD : C.MU, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, lb)))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } }, (trainer == null ? void 0 : trainer.id) && /* @__PURE__ */ React.createElement("button", { onClick: () => onDel(trainer.id), style: { padding: "7px 13px", borderRadius: 8, border: "1.5px solid " + C.RD, background: C.RDB, color: C.RD, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "\u{1F5D1} \u0E25\u0E1A"), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { flex: 1, padding: "7px 0", borderRadius: 8, border: "1.5px solid " + C.LN, background: "transparent", color: C.MU, cursor: "pointer", fontFamily: "inherit" } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => ok && onSave(__spreadProps(__spreadValues({}, f), { id: (trainer == null ? void 0 : trainer.id) || uid() })), disabled: !ok, style: { flex: 2 } }, "\u{1F4BE} \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01")));
+}
+function CForm({ course, onSave, onDel, onClose }) {
+  const [f, sf] = useState(course != null ? course : { code: "", name: "", category: "Production", duration: 7, renewMonths: 24, desc: "" });
+  const set = (k, v) => sf((x) => __spreadProps(__spreadValues({}, x), { [k]: v }));
+  const ok = f.code && f.name;
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" } }, /* @__PURE__ */ React.createElement(FL, { label: "\u0E23\u0E2B\u0E31\u0E2A", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.code, onChange: (e) => set("code", e.target.value), placeholder: "KBN-001" })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2B\u0E21\u0E27\u0E14\u0E2B\u0E21\u0E39\u0E48" }, /* @__PURE__ */ React.createElement("select", { style: IS, value: f.category, onChange: (e) => set("category", e.target.value) }, ["Production", "Quality", "Safety", "HR", "Engineering"].map((c) => /* @__PURE__ */ React.createElement("option", { key: c }, c)))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E0A\u0E37\u0E48\u0E2D\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.name, onChange: (e) => set("name", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E23\u0E30\u0E22\u0E30\u0E40\u0E27\u0E25\u0E32 (\u0E0A\u0E21.)" }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "number", value: f.duration, onChange: (e) => set("duration", parseInt(e.target.value) || 7) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38\u0E17\u0E38\u0E01 (\u0E40\u0E14\u0E37\u0E2D\u0E19)" }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "number", value: f.renewMonths, onChange: (e) => set("renewMonths", parseInt(e.target.value) || 24) }))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E04\u0E33\u0E2D\u0E18\u0E34\u0E1A\u0E32\u0E22" }, /* @__PURE__ */ React.createElement("textarea", { style: __spreadProps(__spreadValues({}, IS), { minHeight: 50, resize: "vertical" }), value: f.desc || "", onChange: (e) => set("desc", e.target.value) })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 8 } }, (course == null ? void 0 : course.id) && /* @__PURE__ */ React.createElement("button", { onClick: () => onDel(course.id), style: { padding: "7px 13px", borderRadius: 8, border: "1.5px solid " + C.RD, background: C.RDB, color: C.RD, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "\u{1F5D1} \u0E25\u0E1A"), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { flex: 1, padding: "7px 0", borderRadius: 8, border: "1.5px solid " + C.LN, background: "transparent", color: C.MU, cursor: "pointer", fontFamily: "inherit" } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => ok && onSave(__spreadProps(__spreadValues({}, f), { id: (course == null ? void 0 : course.id) || uid() })), disabled: !ok, style: { flex: 2 } }, "\u{1F4BE} \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01")));
+}
+function SForm({ session, trainers, courses, onSave, onDel, onClose }) {
+  const [f, sf] = useState(session != null ? session : { trainerId: "", courseId: "", date: "", location: "", attendees: "" });
+  const set = (k, v) => sf((x) => __spreadProps(__spreadValues({}, x), { [k]: v }));
+  const ok = f.trainerId && f.courseId && f.date && f.location;
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" } }, /* @__PURE__ */ React.createElement(FL, { label: "\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", req: true }, /* @__PURE__ */ React.createElement("select", { style: IS, value: f.trainerId, onChange: (e) => set("trainerId", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "-- \u0E40\u0E25\u0E37\u0E2D\u0E01 --"), trainers.filter((t) => t.active).map((t) => /* @__PURE__ */ React.createElement("option", { key: t.id, value: t.id }, t.name)))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23", req: true }, /* @__PURE__ */ React.createElement("select", { style: IS, value: f.courseId, onChange: (e) => set("courseId", e.target.value) }, /* @__PURE__ */ React.createElement("option", { value: "" }, "-- \u0E40\u0E25\u0E37\u0E2D\u0E01 --"), courses.map((c) => /* @__PURE__ */ React.createElement("option", { key: c.id, value: c.id }, c.code, " ", c.name)))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "date", value: f.date, onChange: (e) => set("date", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E08\u0E33\u0E19\u0E27\u0E19\u0E1C\u0E39\u0E49\u0E40\u0E23\u0E35\u0E22\u0E19" }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "number", value: f.attendees, onChange: (e) => set("attendees", e.target.value) }))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2A\u0E16\u0E32\u0E19\u0E17\u0E35\u0E48", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.location, onChange: (e) => set("location", e.target.value), placeholder: "\u0E2B\u0E49\u0E2D\u0E07\u0E2D\u0E1A\u0E23\u0E21 A" })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 8 } }, (session == null ? void 0 : session.id) && /* @__PURE__ */ React.createElement("button", { onClick: () => onDel(session.id), style: { padding: "7px 13px", borderRadius: 8, border: "1.5px solid " + C.RD, background: C.RDB, color: C.RD, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "\u{1F5D1} \u0E25\u0E1A"), /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { flex: 1, padding: "7px 0", borderRadius: 8, border: "1.5px solid " + C.LN, background: "transparent", color: C.MU, cursor: "pointer", fontFamily: "inherit" } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => ok && onSave(__spreadProps(__spreadValues({}, f), { id: (session == null ? void 0 : session.id) || uid(), rating: (session == null ? void 0 : session.rating) || 0, ratingCount: (session == null ? void 0 : session.ratingCount) || 0 })), disabled: !ok, style: { flex: 2 } }, "\u{1F4BE} \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01")));
+}
+function HRD({ data, setData, onClose }) {
+  const { trainers, courses, sessions, bookings } = data;
+  const [tab, st] = useState("trainers");
+  const [eT, seT] = useState(null);
+  const [eC, seC] = useState(null);
+  const [eS, seS] = useState(null);
+  const [code, sc] = useState("");
+  const [msg, sm] = useState(null);
+  const pending = bookings.filter((b) => b.status === "pending").length;
+  const expiring = trainers.filter((t) => t.active).flatMap((t) => t.courseIds.map((cid) => {
+    const co = courses.find((x) => x.id === cid);
+    if (!co) return null;
+    const m = mLeft(t.certDate, co.renewMonths);
+    return m <= 3 ? { t, co, m } : null;
+  }).filter(Boolean));
+  const TABS = [["trainers", "\u{1F464} \u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23"], ["courses", "\u{1F4DA} \u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23"], ["sessions", "\u{1F4C5} Class"], ["bookings", "\u{1F4E9} \u0E08\u0E2D\u0E07" + (pending > 0 ? " (" + pending + ")" : "")], ["expiry", "\u23F0 \u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38" + (expiring.length > 0 ? " (" + expiring.length + ")" : "")]];
+  const saveT = (t) => {
+    const up = trainers.some((x) => x.id === t.id) ? trainers.map((x) => x.id === t.id ? t : x) : [...trainers, t];
+    sv("v3_trainers", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { trainers: up }));
+    seT(null);
+  };
+  const delT = (id) => {
+    if (!confirm("\u0E25\u0E1A\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23\u0E19\u0E35\u0E49?")) return;
+    const up = trainers.filter((x) => x.id !== id);
+    sv("v3_trainers", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { trainers: up }));
+    seT(null);
+  };
+  const saveC = (c) => {
+    const up = courses.some((x) => x.id === c.id) ? courses.map((x) => x.id === c.id ? c : x) : [...courses, c];
+    sv("v3_courses", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { courses: up }));
+    seC(null);
+  };
+  const delC = (id) => {
+    if (!confirm("\u0E25\u0E1A\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23?")) return;
+    const up = courses.filter((x) => x.id !== id);
+    sv("v3_courses", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { courses: up }));
+    seC(null);
+  };
+  const saveS = (s) => {
+    const up = sessions.some((x) => x.id === s.id) ? sessions.map((x) => x.id === s.id ? s : x) : [...sessions, s];
+    sv("v3_sessions", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { sessions: up }));
+    seS(null);
+  };
+  const delS = (id) => {
+    if (!confirm("\u0E25\u0E1A Class?")) return;
+    const up = sessions.filter((x) => x.id !== id);
+    sv("v3_sessions", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { sessions: up }));
+    seS(null);
+  };
+  const confirmBook = (b) => {
+    const upB = bookings.map((x) => x.id === b.id ? __spreadProps(__spreadValues({}, x), { status: "confirmed" }) : x);
+    const newS = { id: uid(), trainerId: b.trainerId, courseId: b.courseId, date: b.date, location: b.dept, attendees: Number(b.attendees) || 0, rating: 0, ratingCount: 0 };
+    const upS = [...sessions, newS];
+    sv("v3_bookings", upB);
+    sv("v3_sessions", upS);
+    setData((d) => __spreadProps(__spreadValues({}, d), { bookings: upB, sessions: upS }));
+  };
+  const renewCert = (tid) => {
+    const up = trainers.map((t) => t.id === tid ? __spreadProps(__spreadValues({}, t), { certDate: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10) }) : t);
+    sv("v3_trainers", up);
+    setData((d) => __spreadProps(__spreadValues({}, d), { trainers: up }));
+  };
+  const mkCode = (sid, stars) => {
+    const s6 = sid.slice(-6).toUpperCase();
+    let h = 0;
+    for (const c of sid + "|" + stars) h = h * 31 + c.charCodeAt(0) >>> 0;
+    return "DTT-" + s6 + "-" + stars + "-" + h.toString(36).toUpperCase().slice(-4);
+  };
+  const redeem = () => {
+    const m = code.trim().toUpperCase().match(/^DTT-([A-Z0-9]+)-([1-5])-([A-Z0-9]+)$/);
+    if (!m) {
+      sm({ ok: false, t: "Code \u0E44\u0E21\u0E48\u0E16\u0E39\u0E01\u0E15\u0E49\u0E2D\u0E07" });
+      return;
+    }
+    const [, s6, sStr] = m;
+    const stars = parseInt(sStr);
+    const sess = sessions.find((s) => s.id.slice(-6).toUpperCase() === s6);
+    if (!sess) {
+      sm({ ok: false, t: "\u0E44\u0E21\u0E48\u0E1E\u0E1A Session" });
+      return;
+    }
+    if (mkCode(sess.id, stars).split("-")[3] !== m[3]) {
+      sm({ ok: false, t: "Code \u0E1C\u0E34\u0E14" });
+      return;
+    }
+    const allR = ld("v3_ratings", []);
+    if (allR.some((r) => r.code === code.trim().toUpperCase())) {
+      sm({ ok: false, t: "\u0E43\u0E0A\u0E49\u0E41\u0E25\u0E49\u0E27" });
+      return;
+    }
+    const upR = [...allR, { sessionId: sess.id, stars, code: code.trim().toUpperCase(), ts: Date.now() }];
+    const sR = upR.filter((r) => r.sessionId === sess.id);
+    const avg = parseFloat((sR.reduce((a, r) => a + r.stars, 0) / sR.length).toFixed(1));
+    const upS = sessions.map((s) => s.id === sess.id ? __spreadProps(__spreadValues({}, s), { rating: avg, ratingCount: sR.length }) : s);
+    sv("v3_ratings", upR);
+    sv("v3_sessions", upS);
+    setData((d) => __spreadProps(__spreadValues({}, d), { sessions: upS }));
+    sm({ ok: true, t: "\u2705 \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01\u0E41\u0E25\u0E49\u0E27 \u2605" + stars });
+    sc("");
+  };
+  return /* @__PURE__ */ React.createElement(Modal, { onClose, w: 600 }, /* @__PURE__ */ React.createElement(MH, { title: "\u2699\uFE0F HRD Management", onClose }), /* @__PURE__ */ React.createElement("div", { style: { padding: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { background: C.N, borderRadius: 10, padding: 12, marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.GL, fontWeight: 700, marginBottom: 7 } }, "\u{1F3AB} \u0E23\u0E31\u0E1A Rating Code \u0E08\u0E32\u0E01\u0E1C\u0E39\u0E49\u0E40\u0E23\u0E35\u0E22\u0E19"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8 } }, /* @__PURE__ */ React.createElement("input", { value: code, onChange: (e) => {
+    sc(e.target.value.toUpperCase());
+    sm(null);
+  }, placeholder: "DTT-XXXXXX-5-XXXX", style: { flex: 1, padding: "7px 10px", borderRadius: 7, border: "1px solid rgba(255,255,255,.2)", background: "rgba(255,255,255,.1)", color: "#fff", fontSize: 13, fontFamily: "inherit", outline: "none" } }), /* @__PURE__ */ React.createElement(Btn, { onClick: redeem, variant: "gold" }, "\u0E23\u0E31\u0E1A")), msg && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 5, fontSize: 12, fontWeight: 700, color: msg.ok ? "#86EFAC" : "#FCA5A5" } }, msg.t)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 2, overflowX: "auto", marginBottom: 14 } }, TABS.map(([k, lb]) => /* @__PURE__ */ React.createElement("button", { key: k, onClick: () => st(k), style: { flexShrink: 0, padding: "6px 11px", borderRadius: "7px 7px 0 0", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, background: tab === k ? C.N : C.BG, color: tab === k ? "#fff" : C.MU } }, lb))), tab === "trainers" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("b", { style: { color: C.N, fontSize: 13 } }, "\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => seT({}) }, "+ \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23")), trainers.map((t) => /* @__PURE__ */ React.createElement("div", { key: t.id, style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", marginBottom: 6, background: C.BG, borderRadius: 9, border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement(Av, { name: t.name, photo: t.photo || "", size: 40 }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, t.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, t.dept, " \xB7 ", t.certNo)), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, padding: "2px 7px", borderRadius: 99, fontWeight: 700, background: t.active ? C.GRB : C.RDB, color: t.active ? C.GR : C.RD } }, t.active ? "Active" : "Inactive"), /* @__PURE__ */ React.createElement("button", { onClick: () => seT(t), style: { padding: "4px 10px", borderRadius: 6, border: "1px solid " + C.LN, background: "#fff", fontSize: 11, cursor: "pointer", fontFamily: "inherit" } }, "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02"))), eT !== null && /* @__PURE__ */ React.createElement(Modal, { onClose: () => seT(null), w: 540 }, /* @__PURE__ */ React.createElement(MH, { title: eT.id ? "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23" : "\u2795 \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", onClose: () => seT(null) }), /* @__PURE__ */ React.createElement(TForm, { trainer: eT.id ? eT : void 0, courses, onSave: saveT, onDel: delT, onClose: () => seT(null) }))), tab === "courses" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("b", { style: { color: C.N, fontSize: 13 } }, "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => seC({}) }, "+ \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23")), courses.map((co) => /* @__PURE__ */ React.createElement("div", { key: co.id, style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", marginBottom: 6, background: C.BG, borderRadius: 9, border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, background: (CAT[co.category] || C.BL) + "22", color: CAT[co.category] || C.BL, padding: "3px 9px", borderRadius: 5, fontWeight: 700, flexShrink: 0 } }, co.code), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, co.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, co.category, " \xB7 ", co.duration, "\u0E0A\u0E21. \xB7 \u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38 ", co.renewMonths, " \u0E40\u0E14\u0E37\u0E2D\u0E19")), /* @__PURE__ */ React.createElement("button", { onClick: () => seC(co), style: { padding: "4px 10px", borderRadius: 6, border: "1px solid " + C.LN, background: "#fff", fontSize: 11, cursor: "pointer", fontFamily: "inherit" } }, "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02"))), eC !== null && /* @__PURE__ */ React.createElement(Modal, { onClose: () => seC(null), w: 460 }, /* @__PURE__ */ React.createElement(MH, { title: eC.id ? "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23" : "\u2795 \u0E40\u0E1E\u0E34\u0E48\u0E21\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23", onClose: () => seC(null) }), /* @__PURE__ */ React.createElement(CForm, { course: eC.id ? eC : void 0, onSave: saveC, onDel: delC, onClose: () => seC(null) }))), tab === "sessions" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("b", { style: { color: C.N, fontSize: 13 } }, "Class \u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => seS({}) }, "+ \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01 Class")), [...sessions].sort((a, b) => b.date.localeCompare(a.date)).map((s) => {
+    const tr = trainers.find((x) => x.id === s.trainerId);
+    const co = courses.find((x) => x.id === s.courseId);
+    return /* @__PURE__ */ React.createElement("div", { key: s.id, style: { display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", marginBottom: 6, background: C.BG, borderRadius: 9, border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, (tr == null ? void 0 : tr.name) || "\u2014"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, s.date, " \xB7 ", co == null ? void 0 : co.code, " \xB7 ", s.location, " \xB7 ", s.attendees, "\u0E04\u0E19")), s.ratingCount > 0 ? /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: C.AM, fontWeight: 700 } }, "\u2605", s.rating) : /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, color: C.MU } }, "\u2014"), /* @__PURE__ */ React.createElement("button", { onClick: () => seS(s), style: { padding: "4px 10px", borderRadius: 6, border: "1px solid " + C.LN, background: "#fff", fontSize: 11, cursor: "pointer", fontFamily: "inherit" } }, "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02"));
+  }), eS !== null && /* @__PURE__ */ React.createElement(Modal, { onClose: () => seS(null), w: 460 }, /* @__PURE__ */ React.createElement(MH, { title: eS.id ? "\u270F\uFE0F \u0E41\u0E01\u0E49\u0E44\u0E02 Class" : "\u2795 \u0E1A\u0E31\u0E19\u0E17\u0E36\u0E01 Class", onClose: () => seS(null) }), /* @__PURE__ */ React.createElement(SForm, { session: eS.id ? eS : void 0, trainers, courses, onSave: saveS, onDel: delS, onClose: () => seS(null) }))), tab === "bookings" && /* @__PURE__ */ React.createElement("div", { style: { paddingTop: 4 } }, bookings.length === 0 ? /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: 32, color: C.MU } }, "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E04\u0E33\u0E02\u0E2D") : bookings.map((b) => {
+    const tr = trainers.find((x) => x.id === b.trainerId);
+    const co = courses.find((x) => x.id === b.courseId);
+    const done = b.status === "confirmed";
+    return /* @__PURE__ */ React.createElement("div", { key: b.id, style: { background: done ? C.GRB + "44" : "#fff", borderRadius: 9, padding: "11px 13px", marginBottom: 8, border: "1.5px solid " + (done ? C.GR + "44" : C.LN) } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "flex-start" } }, /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, b.name, " (", b.dept, ")"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: "#444", marginTop: 1 } }, tr == null ? void 0 : tr.name, " \xB7 ", co == null ? void 0 : co.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, b.date, " \xB7 ", b.attendees || "?", " \u0E04\u0E19")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 5, alignItems: "center" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, padding: "2px 6px", borderRadius: 99, fontWeight: 700, background: done ? C.GRB : C.AMB, color: done ? C.GR : C.AM } }, done ? "\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19\u0E41\u0E25\u0E49\u0E27" : "\u0E23\u0E2D"), !done && /* @__PURE__ */ React.createElement("button", { onClick: () => confirmBook(b), style: { padding: "4px 9px", borderRadius: 7, border: "none", background: C.GR, color: "#fff", fontWeight: 700, fontSize: 11, cursor: "pointer", fontFamily: "inherit" } }, "\u2705 \u0E22\u0E37\u0E19\u0E22\u0E31\u0E19"))));
+  })), tab === "expiry" && /* @__PURE__ */ React.createElement("div", { style: { paddingTop: 4 } }, expiring.length === 0 ? /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: 24, color: C.GR } }, "\u2705 \u0E44\u0E21\u0E48\u0E21\u0E35\u0E23\u0E32\u0E22\u0E01\u0E32\u0E23\u0E43\u0E01\u0E25\u0E49\u0E2B\u0E21\u0E14\u0E2D\u0E32\u0E22\u0E38") : expiring.map(({ t, co, m }, i) => {
+    const s = eb(m);
+    return /* @__PURE__ */ React.createElement("div", { key: i, style: { background: "#fff", borderRadius: 9, padding: 11, marginBottom: 8, border: "1.5px solid " + s.c + "44" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 8 } }, /* @__PURE__ */ React.createElement(Av, { name: t.name, photo: t.photo || "", size: 36 }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, t.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, co.name)), /* @__PURE__ */ React.createElement("span", { style: { marginLeft: "auto", fontSize: 11, background: s.bg, color: s.c, padding: "2px 8px", borderRadius: 99, fontWeight: 700 } }, m < 0 ? "\u0E2B\u0E21\u0E14\u0E2D\u0E32\u0E22\u0E38" : "\u0E40\u0E2B\u0E25\u0E37\u0E2D " + s.lb)), /* @__PURE__ */ React.createElement("button", { onClick: () => renewCert(t.id), style: { width: "100%", padding: "7px 0", borderRadius: 8, border: "none", background: C.N, color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, "\u{1F504} \u0E15\u0E48\u0E2D\u0E2D\u0E32\u0E22\u0E38\u0E27\u0E31\u0E19\u0E19\u0E35\u0E49"));
+  }))));
+}
+function BookF({ trainer, courses, onClose, onSave }) {
+  const [f, sf] = useState({ trainerId: trainer.id, courseId: trainer.courseIds[0] || "", date: "", dept: "", name: "", attendees: "", contact: "" });
+  const set = (k, v) => sf((x) => __spreadProps(__spreadValues({}, x), { [k]: v }));
+  const ok = f.courseId && f.date && f.dept && f.name;
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10, alignItems: "center", marginBottom: 14, paddingBottom: 12, borderBottom: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement(Av, { name: trainer.name, photo: trainer.photo || "", size: 44 }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 15 } }, trainer.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU } }, trainer.dept))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23", req: true }, /* @__PURE__ */ React.createElement("select", { style: IS, value: f.courseId, onChange: (e) => set("courseId", e.target.value) }, trainer.courseIds.map((cid) => {
+    const co = courses.find((x) => x.id === cid);
+    return co ? /* @__PURE__ */ React.createElement("option", { key: cid, value: cid }, co.code, " \u2014 ", co.name) : null;
+  }))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 10px" } }, /* @__PURE__ */ React.createElement(FL, { label: "\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "date", value: f.date, onChange: (e) => set("date", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E08\u0E33\u0E19\u0E27\u0E19\u0E04\u0E19" }, /* @__PURE__ */ React.createElement("input", { style: IS, type: "number", value: f.attendees, onChange: (e) => set("attendees", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E1C\u0E39\u0E49\u0E02\u0E2D", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.name, onChange: (e) => set("name", e.target.value) })), /* @__PURE__ */ React.createElement(FL, { label: "\u0E41\u0E1C\u0E19\u0E01", req: true }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.dept, onChange: (e) => set("dept", e.target.value) }))), /* @__PURE__ */ React.createElement(FL, { label: "\u0E15\u0E34\u0E14\u0E15\u0E48\u0E2D" }, /* @__PURE__ */ React.createElement("input", { style: IS, value: f.contact, onChange: (e) => set("contact", e.target.value), placeholder: "\u0E40\u0E1A\u0E2D\u0E23\u0E4C / LINE / Email" })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 7, justifyContent: "flex-end", marginTop: 8 } }, /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { padding: "7px 14px", borderRadius: 7, border: "1.5px solid " + C.LN, background: "transparent", cursor: "pointer", fontFamily: "inherit", color: C.MU } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => ok && onSave(f), disabled: !ok }, "\u{1F4E9} \u0E2A\u0E48\u0E07\u0E04\u0E33\u0E02\u0E2D")));
+}
+function RateF({ sess, courses, trainers, ratings, onClose, onSubmit }) {
+  const co = courses.find((c) => c.id === sess.courseId);
+  const tr = trainers.find((t) => t.id === sess.trainerId);
+  const [stars, ss] = useState(0);
+  const [hover, sh] = useState(0);
+  const [comment, sc] = useState("");
+  const dkey = getDK();
+  const already = ratings.some((r) => r.sessionId === sess.id && r.deviceKey === dkey);
+  const lbl = ["", "\u{1F615} \u0E15\u0E49\u0E2D\u0E07\u0E1B\u0E23\u0E31\u0E1A\u0E1B\u0E23\u0E38\u0E07", "\u{1F610} \u0E1E\u0E2D\u0E43\u0E0A\u0E49", "\u{1F642} \u0E14\u0E35", "\u{1F60A} \u0E14\u0E35\u0E21\u0E32\u0E01", "\u{1F929} \u0E22\u0E2D\u0E14\u0E40\u0E22\u0E35\u0E48\u0E22\u0E21"];
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: 18 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 12, alignItems: "center", marginBottom: 14, paddingBottom: 12, borderBottom: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement(Av, { name: (tr == null ? void 0 : tr.name) || "?", photo: (tr == null ? void 0 : tr.photo) || "", size: 46 }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 14 } }, tr == null ? void 0 : tr.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: CAT[co == null ? void 0 : co.category] || C.BL, fontWeight: 600 } }, co == null ? void 0 : co.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, sess.date, " \xB7 ", sess.location))), already ? /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: "18px 0" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 40, marginBottom: 7 } }, "\u2705"), /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, marginBottom: 5 } }, "\u0E43\u0E2B\u0E49\u0E04\u0E30\u0E41\u0E19\u0E19 Session \u0E19\u0E35\u0E49\u0E41\u0E25\u0E49\u0E27"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU, marginBottom: 14 } }, "1 \u0E40\u0E04\u0E23\u0E37\u0E48\u0E2D\u0E07 1 \u0E04\u0E23\u0E31\u0E49\u0E07"), /* @__PURE__ */ React.createElement(Btn, { onClick: onClose }, "\u0E1B\u0E34\u0E14")) : /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 8 } }, /* @__PURE__ */ React.createElement("b", { style: { color: C.N } }, "\u0E01\u0E32\u0E23\u0E2D\u0E1A\u0E23\u0E21\u0E40\u0E1B\u0E47\u0E19\u0E1B\u0E23\u0E30\u0E42\u0E22\u0E0A\u0E19\u0E4C\u0E41\u0E04\u0E48\u0E44\u0E2B\u0E19?")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 5, marginBottom: 5 } }, [1, 2, 3, 4, 5].map((v) => /* @__PURE__ */ React.createElement("button", { key: v, onClick: () => ss(v), onMouseEnter: () => sh(v), onMouseLeave: () => sh(0), style: { background: "none", border: "none", cursor: "pointer", fontSize: 42, lineHeight: 1, transform: (hover || stars) >= v ? "scale(1.2)" : "scale(1)", transition: "transform .1s", filter: (hover || stars) >= v ? "none" : "grayscale(1) opacity(.3)" } }, "\u2B50"))), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", height: 22, marginBottom: 12, fontSize: 13, fontWeight: 700, color: C.AM } }, (hover || stars) > 0 && lbl[hover || stars]), /* @__PURE__ */ React.createElement("textarea", { value: comment, onChange: (e) => sc(e.target.value), placeholder: "\u0E04\u0E27\u0E32\u0E21\u0E04\u0E34\u0E14\u0E40\u0E2B\u0E47\u0E19 (\u0E44\u0E21\u0E48\u0E1A\u0E31\u0E07\u0E04\u0E31\u0E1A)", style: __spreadProps(__spreadValues({}, IS), { minHeight: 65, resize: "vertical", marginBottom: 12 }) }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 7 } }, /* @__PURE__ */ React.createElement("button", { onClick: onClose, style: { flex: 1, padding: 9, borderRadius: 7, border: "1.5px solid " + C.LN, background: "transparent", color: C.MU, cursor: "pointer", fontFamily: "inherit" } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => stars && onSubmit(sess.id, stars, comment, dkey), disabled: !stars, style: { flex: 2, padding: 9 } }, stars ? "\u{1F4E9} \u0E2A\u0E48\u0E07\u0E04\u0E30\u0E41\u0E19\u0E19" : "\u0E40\u0E25\u0E37\u0E2D\u0E01\u0E04\u0E30\u0E41\u0E19\u0E19\u0E01\u0E48\u0E2D\u0E19"))));
+}
+function App() {
+  const [D, sD] = useState({ trainers: [], courses: [], sessions: [], bookings: [], ratings: [] });
+  const [ok, sok] = useState(false);
+  const [tab, st] = useState("dir");
+  const [search, ss] = useState("");
+  const [cat, sc] = useState("\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14");
+  const [profile, sp] = useState(null);
+  const [book, sb] = useState(null);
+  const [bookOK, sbOK] = useState(null);
+  const [rate, sr] = useState(null);
+  const [hrd, sh] = useState(false);
+  const [pin, spm] = useState(false);
+  const [pv, spv] = useState("");
+  const [pe, spe] = useState(false);
+  useEffect(() => {
+    let t = ld("v3_trainers", null);
+    if (!t) {
+      t = ST;
+      sv("v3_trainers", t);
+    }
+    let c = ld("v3_courses", null);
+    if (!c) {
+      c = SC;
+      sv("v3_courses", c);
+    }
+    let s = ld("v3_sessions", null);
+    if (!s) {
+      s = SS;
+      sv("v3_sessions", s);
+    }
+    let b = ld("v3_bookings", null);
+    if (!b) {
+      b = [];
+      sv("v3_bookings", b);
+    }
+    let r = ld("v3_ratings", []);
+    sD({ trainers: t, courses: c, sessions: s, bookings: b, ratings: r });
     sok(true);
-  })();},[]);
-
-  const submitRating=async(sid,stars,comment,dk)=>{
-    const upR=[...D.ratings,{sessionId:sid,stars,comment,deviceKey:dk,ts:Date.now()}];
-    const sR=upR.filter(r=>r.sessionId===sid);
-    const avg=parseFloat((sR.reduce((a,r)=>a+r.stars,0)/sR.length).toFixed(1));
-    const upS=D.sessions.map(s=>s.id===sid?{...s,rating:avg,ratingCount:sR.length}:s);
-    await save("v3_ratings",upR);await save("v3_sessions",upS);
-    sD(d=>({...d,ratings:upR,sessions:upS}));sr(null);
+  }, []);
+  const submitRating = (sid, stars, comment, dkey) => {
+    const upR = [...D.ratings, { sessionId: sid, stars, comment, deviceKey: dkey, ts: Date.now() }];
+    const sR = upR.filter((r) => r.sessionId === sid);
+    const avg = parseFloat((sR.reduce((a, r) => a + r.stars, 0) / sR.length).toFixed(1));
+    const upS = D.sessions.map((s) => s.id === sid ? __spreadProps(__spreadValues({}, s), { rating: avg, ratingCount: sR.length }) : s);
+    sv("v3_ratings", upR);
+    sv("v3_sessions", upS);
+    sD((d) => __spreadProps(__spreadValues({}, d), { ratings: upR, sessions: upS }));
+    sr(null);
   };
-  const saveBook=async f=>{
-    const id="BK"+String(Date.now()).slice(-5);
-    const nb={...f,id,status:"pending",createdAt:new Date().toISOString().slice(0,10)};
-    const up=[...D.bookings,nb];
-    await save("v3_bookings",up);sD(d=>({...d,bookings:up}));sb(null);sbOK(id);
+  const saveBook = (f) => {
+    const id = "BK" + String(Date.now()).slice(-5);
+    const nb = __spreadProps(__spreadValues({}, f), { id, status: "pending", createdAt: (/* @__PURE__ */ new Date()).toISOString().slice(0, 10) });
+    const up = [...D.bookings, nb];
+    sv("v3_bookings", up);
+    sD((d) => __spreadProps(__spreadValues({}, d), { bookings: up }));
+    sb(null);
+    sbOK(id);
   };
-
-  if(!ok)return <div style={{padding:60,textAlign:"center",color:C.MU,fontSize:15}}>⏳ กำลังโหลด...</div>;
-
-  const {trainers,courses,sessions,bookings,ratings}=D;
-  const ranked=[...trainers].filter(t=>t.active).sort((a,b)=>tScore(b,sessions,courses)-tScore(a,sessions,courses));
-  const filtered=trainers.filter(t=>{
-    if(!t.active)return false;
-    if(search&&!t.name.includes(search)&&!t.dept.includes(search))return false;
-    if(cat!=="ทั้งหมด"&&!t.courseIds.some(cid=>courses.find(x=>x.id===cid)?.category===cat))return false;
+  if (!ok) return /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", color: C.MU, fontSize: 16 } }, "\u23F3 \u0E01\u0E33\u0E25\u0E31\u0E07\u0E42\u0E2B\u0E25\u0E14...");
+  const { trainers, courses, sessions, bookings, ratings } = D;
+  const ranked = [...trainers].filter((t) => t.active).sort((a, b) => tScore(b, sessions, courses) - tScore(a, sessions, courses));
+  const filtered = trainers.filter((t) => {
+    if (!t.active) return false;
+    if (search && !t.name.includes(search) && !t.dept.includes(search)) return false;
+    if (cat !== "\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14" && !t.courseIds.some((cid) => {
+      var _a;
+      return ((_a = courses.find((x) => x.id === cid)) == null ? void 0 : _a.category) === cat;
+    })) return false;
     return true;
   });
-  const totalAtt=sessions.reduce((a,s)=>a+(s.attendees||0),0);
-  const rSess=sessions.filter(x=>x.ratingCount>0);
-  const avgSc=rSess.length?(rSess.reduce((a,x)=>a+x.rating,0)/rSess.length).toFixed(1):null;
-  const pending=bookings.filter(b=>b.status==="pending").length;
-  const M=["🥇","🥈","🥉"];
-  const upcoming=sessions.filter(s=>new Date(s.date)>new Date()).sort((a,b)=>a.date.localeCompare(b.date));
-  const past=sessions.filter(s=>new Date(s.date)<=new Date()).sort((a,b)=>b.date.localeCompare(a.date));
-
-  return <div style={{background:C.BG,minHeight:600,fontFamily:"'Sarabun',sans-serif,sans-serif"}}>
-    {/* Header */}
-    <div style={{background:C.N}}>
-      <div style={{height:3,background:`linear-gradient(90deg,${C.G},${C.GL},${C.G})`}}/>
-      <div style={{maxWidth:1100,margin:"0 auto",padding:"0 14px",display:"flex",alignItems:"center",justifyContent:"space-between",height:50}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:20}}>🎓</span>
-          <div><div style={{color:"#fff",fontWeight:800,fontSize:14}}>Certified Trainer Registry</div><div style={{color:"rgba(245,230,192,.5)",fontSize:10}}>DENSO TEN (THAILAND)</div></div>
-        </div>
-        <div style={{display:"flex",gap:8,alignItems:"center"}}>
-          {pending>0&&<span style={{fontSize:11,padding:"3px 9px",borderRadius:99,background:C.RD,color:"#fff",fontWeight:700}}>📩 {pending}</span>}
-          <button onClick={()=>spm(true)} style={{padding:"5px 13px",border:"1px solid rgba(255,255,255,.2)",borderRadius:7,cursor:"pointer",background:"rgba(255,255,255,.08)",color:"rgba(255,255,255,.8)",fontSize:12,fontFamily:"inherit"}}>⚙️ HRD</button>
-        </div>
-      </div>
-    </div>
-    {/* Stats bar */}
-    <div style={{background:"#162C55",borderBottom:"1px solid #1D3A6E"}}>
-      <div style={{maxWidth:1100,margin:"0 auto",padding:"7px 14px",display:"flex",gap:18,flexWrap:"wrap"}}>
-        {[[trainers.filter(t=>t.active).length,"🎓","Trainers"],[courses.length,"📚","หลักสูตร"],[sessions.length,"📅","Class"],[totalAtt,"👥","ผู้เรียน"],[avgSc||"—","⭐","คะแนนเฉลี่ย"]].map(([v,ic,lb])=>(
-          <div key={lb} style={{display:"flex",alignItems:"center",gap:5}}>
-            <span style={{fontSize:13}}>{ic}</span><b style={{color:"#fff",fontSize:13}}>{v}</b><span style={{color:"rgba(245,230,192,.5)",fontSize:11}}>{lb}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-    {/* Tabs */}
-    <div style={{maxWidth:1100,margin:"0 auto",padding:"0 14px"}}>
-      <div style={{display:"flex",gap:3,padding:"10px 0 0",marginBottom:18,borderBottom:"2px solid "+C.LN}}>
-        {[["dir","🏅 ทำเนียบ Trainer"],["sched","📅 ตารางสอน"],["lb","🏆 Leaderboard"]].map(([k,lb])=>(
-          <button key={k} onClick={()=>st(k)} style={{padding:"7px 14px",border:"none",borderRadius:"7px 7px 0 0",cursor:"pointer",fontFamily:"inherit",fontSize:12,fontWeight:tab===k?700:500,background:tab===k?C.N:C.BG,color:tab===k?"#fff":C.MU}}>{lb}</button>
-        ))}
-      </div>
-
-      {/* DIRECTORY */}
-      {tab==="dir"&&<div>
-        <div style={{textAlign:"center",marginBottom:16}}>
-          <h2 style={{margin:0,fontSize:18,fontWeight:800,color:C.N}}>วิทยากรภายในที่ได้รับการรับรอง</h2>
-          <p style={{margin:"3px 0 0",color:C.MU,fontSize:12}}>คลิกการ์ดดูโปรไฟล์ · ประวัติ · สมรรถนะ · จองวิทยากร</p>
-        </div>
-        <div style={{display:"flex",gap:7,flexWrap:"wrap",marginBottom:14,alignItems:"center"}}>
-          <input placeholder="🔍 ค้นหา" value={search} onChange={e=>ss(e.target.value)} style={{...IS,width:170,flex:"none"}}/>
-          <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
-            {["ทั้งหมด","Production","Quality","Safety","HR","Engineering"].map(c=>(
-              <button key={c} onClick={()=>scat(c)} style={{padding:"4px 10px",borderRadius:99,border:"1.5px solid "+(cat===c?(CAT[c]||C.N):C.LN),background:cat===c?(CAT[c]||C.N):"#fff",color:cat===c?"#fff":C.MU,fontWeight:cat===c?700:500,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>{c}</button>
-            ))}
-          </div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:12,marginBottom:28}}>
-          {filtered.map(tr=>{
-            const rk=ranked.findIndex(x=>x.id===tr.id)+1;
-            const rat=avgR(sessions,tr.id);const hrs=totalH(sessions,courses,tr.id);
-            const ms=sessions.filter(s=>s.trainerId===tr.id);
-            return <div key={tr.id} onClick={()=>sp(tr)}
-              style={{background:"#fff",borderRadius:12,padding:16,cursor:"pointer",border:"1px solid "+C.LN,position:"relative",transition:"transform .15s"}}
-              onMouseEnter={e=>e.currentTarget.style.transform="translateY(-2px)"} onMouseLeave={e=>e.currentTarget.style.transform="none"}>
-              <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,${C.G}00,${C.G},${C.G}00)`,borderRadius:"12px 12px 0 0"}}/>
-              {rk<=3&&<div style={{position:"absolute",top:8,right:10,fontSize:18}}>{M[rk-1]}</div>}
-              <div style={{display:"flex",gap:11,alignItems:"flex-start",marginBottom:10}}>
-                <Av name={tr.name} size={46}/>
-                <div>
-                  <div style={{fontWeight:800,fontSize:14,color:C.N}}>{tr.name}</div>
-                  <div style={{fontSize:11,color:C.MU}}>{tr.dept}</div>
-                  <span style={{fontSize:10,background:C.GL,color:C.AM,display:"inline-block",padding:"1px 6px",borderRadius:3,fontWeight:700,marginTop:2}}>{tr.certNo}</span>
-                </div>
-              </div>
-              <div style={{display:"flex",gap:5,marginBottom:10}}>
-                {[[ms.length+" class",C.BL],[hrs+"h",C.GR],[rat?"★"+rat:"—",C.AM]].map(([v,c])=>(
-                  <div key={v} style={{flex:1,background:C.BG,borderRadius:5,padding:"4px 2px",textAlign:"center",border:"1px solid "+C.LN}}>
-                    <div style={{fontSize:12,fontWeight:700,color:c}}>{v}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={{borderTop:"1px dashed "+C.LN,paddingTop:7,marginBottom:10}}>
-                {tr.courseIds.slice(0,3).map(cid=>{const co=courses.find(x=>x.id===cid);return co?<div key={cid} style={{display:"flex",alignItems:"center",gap:5,marginBottom:3}}>
-                  <span style={{width:5,height:5,borderRadius:"50%",background:CAT[co.category]||C.BL,display:"inline-block",flexShrink:0}}/>
-                  <span style={{fontSize:11,color:"#333",fontWeight:600}}>{co.name}</span>
-                </div>:null;})}
-              </div>
-              <button onClick={e=>{e.stopPropagation();sb(tr);}}
-                style={{width:"100%",padding:7,borderRadius:7,border:"1.5px solid "+C.N,background:"transparent",color:C.N,fontWeight:700,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
-                onMouseEnter={e=>{e.currentTarget.style.background=C.N;e.currentTarget.style.color="#fff";}}
-                onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color=C.N;}}>
-                📅 ขอจองวิทยากร
-              </button>
-            </div>;
-          })}
-        </div>
-      </div>}
-
-      {/* SCHEDULE */}
-      {tab==="sched"&&<div>
-        <h2 style={{margin:"0 0 14px",fontSize:16,fontWeight:800,color:C.N}}>ตารางสอน & ประวัติการสอน</h2>
-        {upcoming.length>0&&<div style={{marginBottom:18}}>
-          <div style={{fontSize:12,fontWeight:700,color:C.BL,marginBottom:8}}>📌 กำลังจะมาถึง ({upcoming.length})</div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:8}}>
-            {upcoming.map(s=>{const tr=trainers.find(x=>x.id===s.trainerId);const co=courses.find(x=>x.id===s.courseId);return(
-              <div key={s.id} style={{background:"#fff",borderRadius:9,padding:"11px 13px",border:"1.5px solid "+C.BL+"44"}}>
-                <div style={{fontWeight:700,color:C.N,fontSize:13}}>{tr?.name}</div>
-                <div style={{fontSize:11,color:CAT[co?.category]||C.BL,fontWeight:700}}>{co?.name}</div>
-                <div style={{fontSize:11,color:C.MU,marginTop:3}}>📅 {s.date} · 📍 {s.location}</div>
-              </div>);})}
-          </div>
-        </div>}
-        <div style={{fontSize:12,fontWeight:700,color:C.N,marginBottom:8}}>🗂 ประวัติการสอน ({past.length})</div>
-        <div style={{background:"#fff",borderRadius:10,overflow:"auto",border:"1px solid "+C.LN}}>
-          <table style={{width:"100%",borderCollapse:"collapse",minWidth:540}}>
-            <thead><tr style={{background:C.N}}>
-              {["วันที่","วิทยากร","หลักสูตร","สถานที่","ผู้เรียน","คะแนน (กดประเมิน)"].map(h=>(
-                <th key={h} style={{padding:"9px 11px",textAlign:"left",fontSize:11,fontWeight:700,color:"rgba(255,255,255,.65)"}}>{h}</th>
-              ))}
-            </tr></thead>
-            <tbody>
-              {past.map((s,i)=>{const tr=trainers.find(x=>x.id===s.trainerId);const co=courses.find(x=>x.id===s.courseId);
-                return <tr key={s.id} style={{borderBottom:"1px solid "+C.LN,background:i%2?"#fff":C.BG}}>
-                  <td style={{padding:"9px 11px",fontSize:12,fontWeight:700,color:C.N}}>{s.date}</td>
-                  <td style={{padding:"9px 11px"}}><div style={{display:"flex",alignItems:"center",gap:6}}><Av name={tr?.name||"?"} size={24}/><span style={{fontSize:12,fontWeight:700,color:C.N}}>{tr?.name||"—"}</span></div></td>
-                  <td style={{padding:"9px 11px"}}>{co&&<span style={{fontSize:10,background:(CAT[co.category]||C.BL)+"18",color:CAT[co.category]||C.BL,padding:"2px 6px",borderRadius:3,fontWeight:700}}>{co.code}</span>}</td>
-                  <td style={{padding:"9px 11px",fontSize:11,color:C.MU}}>{s.location}</td>
-                  <td style={{padding:"9px 11px",fontWeight:700,color:C.N,textAlign:"center"}}>{s.attendees}</td>
-                  <td style={{padding:"5px 11px"}}>
-                    <button onClick={()=>sr(s)} style={{background:"none",border:"none",cursor:"pointer",padding:"4px 7px",borderRadius:7,fontFamily:"inherit"}}
-                      onMouseEnter={e=>e.currentTarget.style.background=C.AMB} onMouseLeave={e=>e.currentTarget.style.background="none"}>
-                      {s.ratingCount>0?<span style={{fontWeight:700,color:C.AM,fontSize:13}}>★ {s.rating} <span style={{fontSize:11,color:C.MU,fontWeight:400}}>({s.ratingCount})</span></span>:<span style={{fontSize:11,color:C.MU}}>— ให้คะแนน</span>}
-                    </button>
-                  </td>
-                </tr>;})}
-              {past.length===0&&<tr><td colSpan={6} style={{padding:30,textAlign:"center",color:C.MU}}>ยังไม่มีข้อมูล</td></tr>}
-            </tbody>
-          </table>
-        </div>
-      </div>}
-
-      {/* LEADERBOARD */}
-      {tab==="lb"&&<div>
-        <div style={{textAlign:"center",marginBottom:20}}>
-          <h2 style={{margin:0,fontSize:18,fontWeight:800,color:C.N}}>🏆 Leaderboard</h2>
-          <p style={{margin:"3px 0 0",color:C.MU,fontSize:12}}>ชั่วโมงสอน 30% · Feedback 30% · เซอร์ 20% · สมรรถนะ 20%</p>
-        </div>
-        <div style={{display:"flex",justifyContent:"center",alignItems:"flex-end",gap:10,marginBottom:28}}>
-          {[ranked[1],ranked[0],ranked[2]].map((t,pi)=>{
-            if(!t)return <div key={pi} style={{width:120}}/>;
-            const pos=[2,1,3][pi];const ht=[130,170,90][pi];const sc=tScore(t,sessions,courses);
-            return <div key={t.id} onClick={()=>sp(t)} style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",width:120}}>
-              <div style={{fontSize:24,marginBottom:3}}>{M[[1,0,2][pi]]}</div>
-              <Av name={t.name} size={44}/>
-              <div style={{fontWeight:700,fontSize:11,color:C.N,marginTop:5,textAlign:"center"}}>{t.name}</div>
-              <div style={{fontSize:11,color:C.MU}}>{t.dept}</div>
-              <div style={{background:C.N,borderRadius:"7px 7px 0 0",width:"100%",height:ht,marginTop:6,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
-                <div style={{fontSize:16,fontWeight:800,color:"#fff"}}>#{pos}</div>
-                <div style={{fontSize:14,fontWeight:700,color:C.G}}>{sc}pt</div>
-              </div>
-            </div>;
-          })}
-        </div>
-        <div style={{background:"#fff",borderRadius:10,overflow:"hidden",border:"1px solid "+C.LN}}>
-          {ranked.map((t,i)=>{const sc=tScore(t,sessions,courses);const rat=avgR(sessions,t.id);
-            return <div key={t.id} onClick={()=>sp(t)}
-              style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",borderBottom:"1px solid "+C.LN,cursor:"pointer"}}
-              onMouseEnter={e=>e.currentTarget.style.background=C.BG} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <div style={{width:28,textAlign:"center",fontWeight:700,fontSize:i<3?20:13,color:i<3?C.G:C.MU}}>{i<3?M[i]:"#"+(i+1)}</div>
-              <Av name={t.name} size={38}/>
-              <div style={{flex:1}}><div style={{fontWeight:700,fontSize:13,color:C.N}}>{t.name}</div><div style={{fontSize:11,color:C.MU}}>{t.dept}</div></div>
-              <div style={{display:"flex",gap:5}}>
-                <span style={{fontSize:10,background:C.BLB,color:C.BL,padding:"2px 6px",borderRadius:99,fontWeight:700}}>{sessions.filter(s=>s.trainerId===t.id).length} class</span>
-                {rat&&<span style={{fontSize:10,background:C.AMB,color:C.AM,padding:"2px 6px",borderRadius:99,fontWeight:700}}>★{rat}</span>}
-              </div>
-              <div style={{width:72,flexShrink:0}}>
-                <div style={{textAlign:"right",fontSize:13,fontWeight:700,color:C.G,marginBottom:2}}>{sc}pt</div>
-                <div style={{height:4,background:C.LN,borderRadius:99}}><div style={{height:"100%",width:Math.min(sc,100)+"%",background:C.G,borderRadius:99}}/></div>
-              </div>
-            </div>;})}
-        </div>
-      </div>}
-      <div style={{textAlign:"center",padding:"20px 0 10px",color:C.MU,fontSize:10}}>© DENSO TEN (THAILAND) · Certified Trainer Registry</div>
-    </div>
-
-    {/* Profile Modal */}
-    {profile&&<Modal onClose={()=>sp(null)}>
-      <MHead title="โปรไฟล์วิทยากร" onClose={()=>sp(null)}/>
-      <div style={{padding:18}}>
-        <div style={{display:"flex",gap:12,marginBottom:14}}><Av name={profile.name} size={56}/>
-          <div><div style={{fontWeight:800,fontSize:17,color:C.N}}>{profile.name}</div><div style={{fontSize:12,color:C.MU}}>{profile.dept}</div>{profile.bio&&<div style={{fontSize:11,color:"#555",marginTop:3,fontStyle:"italic"}}>"{profile.bio}"</div>}</div>
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,marginBottom:14}}>
-          {[[sessions.filter(s=>s.trainerId===profile.id).length,"Class",C.BL],[totalH(sessions,courses,profile.id)+"h","ชม.",C.GR],[avgR(sessions,profile.id)||"—","★",C.AM]].map(([v,lb,c])=>(
-            <div key={lb} style={{background:C.BG,borderRadius:7,padding:"7px 3px",textAlign:"center",border:"1px solid "+C.LN}}>
-              <div style={{fontSize:16,fontWeight:700,color:c}}>{v}</div><div style={{fontSize:10,color:C.MU}}>{lb}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{marginBottom:12}}>
-          {profile.courseIds.map(cid=>{const co=courses.find(x=>x.id===cid);if(!co)return null;const m=mLeft(profile.certDate,co.renewMonths),s=eb(m);
-            return <div key={cid} style={{background:C.BG,borderRadius:7,padding:10,marginBottom:7,border:"1px solid "+C.LN}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <div><span style={{fontSize:10,color:CAT[co.category]||C.BL,fontWeight:700}}>{co.code}</span><div style={{fontSize:13,fontWeight:700,color:C.N}}>{co.name}</div></div>
-                <span style={{fontSize:10,background:s.bg,color:s.c,padding:"2px 7px",borderRadius:99,fontWeight:700}}>{s.lb}</span>
-              </div>
-            </div>;})}
-        </div>
-        <div style={{marginBottom:14}}>
-          {COMP.map(k=>{const v=profile.competencies?.[k]||0;return(
-            <div key={k} style={{marginBottom:6}}>
-              <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:2}}>
-                <span style={{color:"#333"}}>{k}</span><span style={{fontWeight:700,color:C.G}}>{v}/5</span>
-              </div>
-              <div style={{height:5,background:C.LN,borderRadius:99}}><div style={{height:"100%",width:(v/5*100)+"%",background:C.G,borderRadius:99}}/></div>
-            </div>);})}
-        </div>
-        <button onClick={()=>{sp(null);setTimeout(()=>sb(profile),30);}} style={{width:"100%",padding:10,borderRadius:8,border:"none",cursor:"pointer",background:C.N,color:"#fff",fontWeight:700,fontSize:13,fontFamily:"inherit"}}>📅 ขอจองวิทยากรคนนี้</button>
-      </div>
-    </Modal>}
-
-    {/* Booking Modal */}
-    {book&&<Modal onClose={()=>sb(null)}>
-      <MHead title="📅 ขอจองวิทยากร" onClose={()=>sb(null)}/>
-      <BookingForm trainer={book} courses={courses} onClose={()=>sb(null)} onSave={saveBook}/>
-    </Modal>}
-
-    {/* Rating Modal */}
-    {rate&&<RatingModal sess={rate} courses={courses} trainers={trainers} ratings={ratings} onClose={()=>sr(null)} onSubmit={submitRating}/>}
-
-    {/* HRD */}
-    {hrd&&<HRD data={D} setData={sD} onClose={()=>sh(false)}/>}
-
-    {/* Book OK */}
-    {bookOK&&<div onClick={()=>sbOK(null)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div style={{background:"#fff",borderRadius:14,padding:24,textAlign:"center",maxWidth:300}}>
-        <div style={{fontSize:44,marginBottom:10}}>🎉</div>
-        <div style={{fontSize:16,fontWeight:800,color:C.N,marginBottom:6}}>ส่งคำขอสำเร็จ</div>
-        <div style={{background:C.GL,borderRadius:8,padding:"6px 16px",display:"inline-block",marginBottom:10}}>
-          <div style={{fontSize:10,color:C.MU}}>เลขที่</div>
-          <div style={{fontSize:20,fontWeight:800,color:C.N,letterSpacing:2}}>{bookOK}</div>
-        </div>
-        <div style={{fontSize:12,color:C.MU,marginBottom:14}}>HRD จะติดต่อกลับเพื่อยืนยัน</div>
-        <Btn onClick={()=>sbOK(null)} style={{padding:"8px 22px"}}>ตกลง</Btn>
-      </div>
-    </div>}
-
-    {/* PIN Modal */}
-    {pin&&<div onClick={e=>e.target===e.currentTarget&&spm(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}}>
-      <div style={{background:"#fff",borderRadius:14,overflow:"hidden",maxWidth:300,width:"100%"}}>
-        <MHead title="🔐 เข้าสู่ระบบ HRD" onClose={()=>spm(false)}/>
-        <div style={{padding:22,textAlign:"center"}}>
-          <div style={{fontSize:12,color:C.MU,marginBottom:10}}>กรอก PIN 4 หลัก</div>
-          <input type="password" value={pv} onChange={e=>{spv(e.target.value);spe(false);}}
-            onKeyDown={e=>e.key==="Enter"&&(pv===PIN?(spm(false),sh(true),spv("")):(spe(true),spv("")))}
-            style={{...IS,textAlign:"center",fontSize:22,letterSpacing:8,width:140,margin:"0 auto 6px"}} maxLength={6} placeholder="••••" autoFocus/>
-          {pe&&<div style={{color:C.RD,fontSize:11,marginBottom:6}}>PIN ไม่ถูกต้อง</div>}
-          <div style={{display:"flex",gap:7,justifyContent:"center",marginTop:10}}>
-            <button onClick={()=>spm(false)} style={{padding:"7px 14px",borderRadius:7,border:"1.5px solid "+C.LN,background:"transparent",cursor:"pointer",fontFamily:"inherit",color:C.MU}}>ยกเลิก</button>
-            <Btn onClick={()=>pv===PIN?(spm(false),sh(true),spv("")):(spe(true),spv(""))}>เข้าสู่ระบบ</Btn>
-          </div>
-        </div>
-      </div>
-    </div>}
-  </div>;
+  const totalAtt = sessions.reduce((a, s) => a + (s.attendees || 0), 0);
+  const rSess = sessions.filter((x) => x.ratingCount > 0);
+  const avgSc = rSess.length ? (rSess.reduce((a, x) => a + x.rating, 0) / rSess.length).toFixed(1) : null;
+  const pending = bookings.filter((b) => b.status === "pending").length;
+  const M = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
+  const upcoming = sessions.filter((s) => new Date(s.date) > /* @__PURE__ */ new Date()).sort((a, b) => a.date.localeCompare(b.date));
+  const past = sessions.filter((s) => new Date(s.date) <= /* @__PURE__ */ new Date()).sort((a, b) => b.date.localeCompare(a.date));
+  return /* @__PURE__ */ React.createElement("div", { style: { background: C.BG, minHeight: "100vh", fontFamily: "'Sarabun',sans-serif" } }, /* @__PURE__ */ React.createElement("div", { style: { background: C.N } }, /* @__PURE__ */ React.createElement("div", { style: { height: 3, background: `linear-gradient(90deg,${C.G},${C.GL},${C.G})` } }), /* @__PURE__ */ React.createElement("div", { style: { maxWidth: 1100, margin: "0 auto", padding: "0 16px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 54 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 24 } }, "\u{1F393}"), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { color: "#fff", fontWeight: 800, fontSize: 15 } }, "Certified Trainer Registry"), /* @__PURE__ */ React.createElement("div", { style: { color: "rgba(245,230,192,.5)", fontSize: 11 } }, "DENSO TEN (THAILAND)"))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, alignItems: "center" } }, pending > 0 && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, padding: "3px 9px", borderRadius: 99, background: C.RD, color: "#fff", fontWeight: 700 } }, "\u{1F4E9} ", pending), /* @__PURE__ */ React.createElement("button", { onClick: () => spm(true), style: { padding: "6px 14px", border: "1px solid rgba(255,255,255,.2)", borderRadius: 7, cursor: "pointer", background: "rgba(255,255,255,.08)", color: "rgba(255,255,255,.8)", fontSize: 13, fontFamily: "inherit" } }, "\u2699\uFE0F HRD")))), /* @__PURE__ */ React.createElement("div", { style: { background: "#162C55", borderBottom: "1px solid #1D3A6E" } }, /* @__PURE__ */ React.createElement("div", { style: { maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", gap: 20, flexWrap: "wrap" } }, [[trainers.filter((t) => t.active).length, "\u{1F393}", "Trainers"], [courses.length, "\u{1F4DA}", "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23"], [sessions.length, "\u{1F4C5}", "Class"], [totalAtt, "\u{1F465}", "\u0E1C\u0E39\u0E49\u0E40\u0E23\u0E35\u0E22\u0E19"], [avgSc || "\u2014", "\u2B50", "\u0E04\u0E30\u0E41\u0E19\u0E19\u0E40\u0E09\u0E25\u0E35\u0E48\u0E22"]].map(([v, ic, lb]) => /* @__PURE__ */ React.createElement("div", { key: lb, style: { display: "flex", alignItems: "center", gap: 6 } }, /* @__PURE__ */ React.createElement("span", null, ic), /* @__PURE__ */ React.createElement("b", { style: { color: "#fff", fontSize: 14 } }, v), /* @__PURE__ */ React.createElement("span", { style: { color: "rgba(245,230,192,.5)", fontSize: 12 } }, lb))))), /* @__PURE__ */ React.createElement("div", { style: { maxWidth: 1100, margin: "0 auto", padding: "0 16px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 4, padding: "12px 0 0", marginBottom: 20, borderBottom: "2px solid " + C.LN } }, [["dir", "\u{1F3C5} \u0E17\u0E33\u0E40\u0E19\u0E35\u0E22\u0E1A Trainer"], ["sched", "\u{1F4C5} \u0E15\u0E32\u0E23\u0E32\u0E07\u0E2A\u0E2D\u0E19"], ["lb", "\u{1F3C6} Leaderboard"]].map(([k, lb]) => /* @__PURE__ */ React.createElement("button", { key: k, onClick: () => st(k), style: { padding: "8px 16px", border: "none", borderRadius: "8px 8px 0 0", cursor: "pointer", fontFamily: "inherit", fontSize: 13, fontWeight: tab === k ? 700 : 500, background: tab === k ? C.N : C.BG, color: tab === k ? "#fff" : C.MU } }, lb))), tab === "dir" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 20 } }, /* @__PURE__ */ React.createElement("h2", { style: { margin: 0, fontSize: 20, fontWeight: 800, color: C.N } }, "\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23\u0E20\u0E32\u0E22\u0E43\u0E19\u0E17\u0E35\u0E48\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E01\u0E32\u0E23\u0E23\u0E31\u0E1A\u0E23\u0E2D\u0E07"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", color: C.MU, fontSize: 13 } }, "\u0E04\u0E25\u0E34\u0E01\u0E01\u0E32\u0E23\u0E4C\u0E14\u0E14\u0E39\u0E42\u0E1B\u0E23\u0E44\u0E1F\u0E25\u0E4C \xB7 \u0E2A\u0E21\u0E23\u0E23\u0E16\u0E19\u0E30 \xB7 \u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34 \xB7 \u0E08\u0E2D\u0E07\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16, alignItems: "center" } }, /* @__PURE__ */ React.createElement("input", { placeholder: "\u{1F50D} \u0E04\u0E49\u0E19\u0E2B\u0E32\u0E0A\u0E37\u0E48\u0E2D/\u0E41\u0E1C\u0E19\u0E01", value: search, onChange: (e) => ss(e.target.value), style: __spreadProps(__spreadValues({}, IS), { width: 190, flex: "none" }) }), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 5, flexWrap: "wrap" } }, ["\u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14", "Production", "Quality", "Safety", "HR", "Engineering"].map((c) => /* @__PURE__ */ React.createElement("button", { key: c, onClick: () => sc(c), style: { padding: "5px 12px", borderRadius: 99, border: "1.5px solid " + (cat === c ? CAT[c] || C.N : C.LN), background: cat === c ? CAT[c] || C.N : "#fff", color: cat === c ? "#fff" : C.MU, fontWeight: cat === c ? 700 : 500, fontSize: 12, cursor: "pointer", fontFamily: "inherit" } }, c)))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(268px,1fr))", gap: 14, marginBottom: 32 } }, filtered.map((tr) => {
+    const rk = ranked.findIndex((x) => x.id === tr.id) + 1;
+    const rat = avgR(sessions, tr.id);
+    const hrs = totalH(sessions, courses, tr.id);
+    const ms = sessions.filter((s) => s.trainerId === tr.id);
+    return /* @__PURE__ */ React.createElement("div", { key: tr.id, onClick: () => sp(tr), style: { background: "#fff", borderRadius: 14, padding: 18, cursor: "pointer", border: "1px solid " + C.LN, position: "relative", transition: "transform .15s,box-shadow .15s" }, onMouseEnter: (e) => {
+      e.currentTarget.style.transform = "translateY(-3px)";
+      e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,.09)";
+    }, onMouseLeave: (e) => {
+      e.currentTarget.style.transform = "none";
+      e.currentTarget.style.boxShadow = "none";
+    } }, /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg,${C.G}00,${C.G},${C.G}00)`, borderRadius: "14px 14px 0 0" } }), rk <= 3 && /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", top: 10, right: 12, fontSize: 20 } }, M[rk - 1]), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 12 } }, /* @__PURE__ */ React.createElement(Av, { name: tr.name, photo: tr.photo || "", size: 52 }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 800, fontSize: 15, color: C.N, lineHeight: 1.3 } }, tr.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU, marginTop: 2 } }, tr.dept), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, background: C.GL, color: C.AM, display: "inline-block", padding: "1px 7px", borderRadius: 4, fontWeight: 700, marginTop: 4 } }, tr.certNo))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12 } }, [[ms.length + " class", C.BL], [hrs + "h", C.GR], [rat ? "\u2605" + rat : "\u2014", C.AM]].map(([v, c]) => /* @__PURE__ */ React.createElement("div", { key: v, style: { flex: 1, background: C.BG, borderRadius: 6, padding: "5px 3px", textAlign: "center", border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: c } }, v)))), /* @__PURE__ */ React.createElement("div", { style: { borderTop: "1px dashed " + C.LN, paddingTop: 10, marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: C.MU, fontWeight: 700, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 } }, "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23\u0E17\u0E35\u0E48\u0E2A\u0E2D\u0E19\u0E44\u0E14\u0E49"), tr.courseIds.length === 0 && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU, fontStyle: "italic" } }, "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23"), tr.courseIds.map((cid) => {
+      const co = courses.find((x) => x.id === cid);
+      return co ? /* @__PURE__ */ React.createElement("div", { key: cid, style: { display: "flex", alignItems: "center", gap: 7, marginBottom: 5 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, background: (CAT[co.category] || C.BL) + "18", color: CAT[co.category] || C.BL, padding: "1px 6px", borderRadius: 3, fontWeight: 700, flexShrink: 0, lineHeight: "16px" } }, co.code), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: "#333", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, co.name)) : null;
+    })), /* @__PURE__ */ React.createElement("button", { onClick: (e) => {
+      e.stopPropagation();
+      sb(tr);
+    }, style: { width: "100%", padding: 8, borderRadius: 8, border: "1.5px solid " + C.N, background: "transparent", color: C.N, fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }, onMouseEnter: (e) => {
+      e.currentTarget.style.background = C.N;
+      e.currentTarget.style.color = "#fff";
+    }, onMouseLeave: (e) => {
+      e.currentTarget.style.background = "transparent";
+      e.currentTarget.style.color = C.N;
+    } }, "\u{1F4C5} \u0E02\u0E2D\u0E08\u0E2D\u0E07\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23"));
+  }))), tab === "sched" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("h2", { style: { margin: "0 0 16px", fontSize: 18, fontWeight: 800, color: C.N } }, "\u0E15\u0E32\u0E23\u0E32\u0E07\u0E2A\u0E2D\u0E19 & \u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E01\u0E32\u0E23\u0E2A\u0E2D\u0E19"), upcoming.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.BL, marginBottom: 10 } }, "\u{1F4CC} \u0E01\u0E33\u0E25\u0E31\u0E07\u0E08\u0E30\u0E21\u0E32\u0E16\u0E36\u0E07 (", upcoming.length, ")"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 } }, upcoming.map((s) => {
+    const tr = trainers.find((x) => x.id === s.trainerId);
+    const co = courses.find((x) => x.id === s.courseId);
+    return /* @__PURE__ */ React.createElement("div", { key: s.id, style: { background: "#fff", borderRadius: 10, padding: "12px 14px", border: "1.5px solid " + C.BL + "44", display: "flex", gap: 10, alignItems: "center" } }, /* @__PURE__ */ React.createElement(Av, { name: (tr == null ? void 0 : tr.name) || "?", photo: (tr == null ? void 0 : tr.photo) || "", size: 36 }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, color: C.N, fontSize: 13 } }, tr == null ? void 0 : tr.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: CAT[co == null ? void 0 : co.category] || C.BL, fontWeight: 700 } }, co == null ? void 0 : co.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU, marginTop: 2 } }, s.date, " \xB7 ", s.location)));
+  }))), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: C.N, marginBottom: 10 } }, "\u{1F5C2} \u0E1B\u0E23\u0E30\u0E27\u0E31\u0E15\u0E34\u0E01\u0E32\u0E23\u0E2A\u0E2D\u0E19 (", past.length, ")"), /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 12, overflow: "auto", border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", minWidth: 560 } }, /* @__PURE__ */ React.createElement("thead", null, /* @__PURE__ */ React.createElement("tr", { style: { background: C.N } }, ["\u0E27\u0E31\u0E19\u0E17\u0E35\u0E48", "\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", "\u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23", "\u0E2A\u0E16\u0E32\u0E19\u0E17\u0E35\u0E48", "\u0E1C\u0E39\u0E49\u0E40\u0E23\u0E35\u0E22\u0E19", "\u0E04\u0E30\u0E41\u0E19\u0E19"].map((h) => /* @__PURE__ */ React.createElement("th", { key: h, style: { padding: "10px 12px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.65)" } }, h)))), /* @__PURE__ */ React.createElement("tbody", null, past.map((s, i) => {
+    const tr = trainers.find((x) => x.id === s.trainerId);
+    const co = courses.find((x) => x.id === s.courseId);
+    return /* @__PURE__ */ React.createElement("tr", { key: s.id, style: { borderBottom: "1px solid " + C.LN, background: i % 2 ? "#fff" : C.BG } }, /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px", fontSize: 13, fontWeight: 700, color: C.N } }, s.date), /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 7 } }, /* @__PURE__ */ React.createElement(Av, { name: (tr == null ? void 0 : tr.name) || "?", photo: (tr == null ? void 0 : tr.photo) || "", size: 28 }), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, fontWeight: 700, color: C.N } }, (tr == null ? void 0 : tr.name) || "\u2014"))), /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px" } }, co && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, background: (CAT[co.category] || C.BL) + "18", color: CAT[co.category] || C.BL, padding: "2px 7px", borderRadius: 4, fontWeight: 700 } }, co.code)), /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px", fontSize: 12, color: C.MU } }, s.location), /* @__PURE__ */ React.createElement("td", { style: { padding: "10px 12px", fontWeight: 700, color: C.N, textAlign: "center" } }, s.attendees), /* @__PURE__ */ React.createElement("td", { style: { padding: "6px 12px" } }, /* @__PURE__ */ React.createElement("button", { onClick: () => sr(s), style: { background: "none", border: "none", cursor: "pointer", padding: "5px 8px", borderRadius: 8, fontFamily: "inherit" }, onMouseEnter: (e) => e.currentTarget.style.background = C.AMB, onMouseLeave: (e) => e.currentTarget.style.background = "none" }, s.ratingCount > 0 ? /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, color: C.AM, fontSize: 14 } }, "\u2605 ", s.rating, " (", s.ratingCount, ")") : /* @__PURE__ */ React.createElement("span", { style: { fontSize: 12, color: C.MU } }, "\u2014 \u0E43\u0E2B\u0E49\u0E04\u0E30\u0E41\u0E19\u0E19"))));
+  }), past.length === 0 && /* @__PURE__ */ React.createElement("tr", null, /* @__PURE__ */ React.createElement("td", { colSpan: 6, style: { padding: 30, textAlign: "center", color: C.MU } }, "\u0E22\u0E31\u0E07\u0E44\u0E21\u0E48\u0E21\u0E35\u0E02\u0E49\u0E2D\u0E21\u0E39\u0E25")))))), tab === "lb" && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 24 } }, /* @__PURE__ */ React.createElement("h2", { style: { margin: 0, fontSize: 20, fontWeight: 800, color: C.N } }, "\u{1F3C6} Leaderboard"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0 0", color: C.MU, fontSize: 13 } }, "\u0E0A\u0E31\u0E48\u0E27\u0E42\u0E21\u0E07\u0E2A\u0E2D\u0E19 30% \xB7 Feedback 30% \xB7 \u0E40\u0E0B\u0E2D\u0E23\u0E4C 20% \xB7 \u0E2A\u0E21\u0E23\u0E23\u0E16\u0E19\u0E30 20%")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 12, marginBottom: 32 } }, [ranked[1], ranked[0], ranked[2]].map((t, pi) => {
+    if (!t) return /* @__PURE__ */ React.createElement("div", { key: pi, style: { width: 130 } });
+    const pos = [2, 1, 3][pi];
+    const ht = [140, 180, 100][pi];
+    const s = tScore(t, sessions, courses);
+    return /* @__PURE__ */ React.createElement("div", { key: t.id, onClick: () => sp(t), style: { display: "flex", flexDirection: "column", alignItems: "center", cursor: "pointer", width: 130 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 26, marginBottom: 4 } }, M[[1, 0, 2][pi]]), /* @__PURE__ */ React.createElement(Av, { name: t.name, photo: t.photo || "", size: 52 }), /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, fontSize: 12, color: C.N, marginTop: 6, textAlign: "center" } }, t.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, t.dept), /* @__PURE__ */ React.createElement("div", { style: { background: C.N, borderRadius: "8px 8px 0 0", width: "100%", height: ht, marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 18, fontWeight: 800, color: "#fff" } }, "#", pos), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: C.G } }, s, "pt")));
+  })), /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 12, overflow: "hidden", border: "1px solid " + C.LN } }, ranked.map((t, i) => {
+    const s = tScore(t, sessions, courses);
+    const rat = avgR(sessions, t.id);
+    return /* @__PURE__ */ React.createElement("div", { key: t.id, onClick: () => sp(t), style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", borderBottom: "1px solid " + C.LN, cursor: "pointer" }, onMouseEnter: (e) => e.currentTarget.style.background = C.BG, onMouseLeave: (e) => e.currentTarget.style.background = "transparent" }, /* @__PURE__ */ React.createElement("div", { style: { width: 30, textAlign: "center", fontWeight: 700, fontSize: i < 3 ? 22 : 14, color: i < 3 ? C.G : C.MU } }, i < 3 ? M[i] : "#" + (i + 1)), /* @__PURE__ */ React.createElement(Av, { name: t.name, photo: t.photo || "", size: 42 }), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 700, fontSize: 14, color: C.N } }, t.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU } }, t.dept)), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 6 } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, background: C.BLB, color: C.BL, padding: "2px 7px", borderRadius: 99, fontWeight: 700 } }, sessions.filter((x) => x.trainerId === t.id).length, " class"), rat && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 11, background: C.AMB, color: C.AM, padding: "2px 7px", borderRadius: 99, fontWeight: 700 } }, "\u2605", rat)), /* @__PURE__ */ React.createElement("div", { style: { width: 80, flexShrink: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "right", fontSize: 14, fontWeight: 700, color: C.G, marginBottom: 3 } }, s, "pt"), /* @__PURE__ */ React.createElement("div", { style: { height: 4, background: C.LN, borderRadius: 99 } }, /* @__PURE__ */ React.createElement("div", { style: { height: "100%", width: Math.min(s, 100) + "%", background: C.G, borderRadius: 99 } }))));
+  }))), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: "24px 0 12px", color: C.MU, fontSize: 11 } }, "\xA9 DENSO TEN (THAILAND) \xB7 Certified Trainer Registry \xB7 HRD Department")), profile && /* @__PURE__ */ React.createElement(Modal, { onClose: () => sp(null), w: 520 }, /* @__PURE__ */ React.createElement(MH, { title: "\u{1F464} \u0E42\u0E1B\u0E23\u0E44\u0E1F\u0E25\u0E4C\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", onClose: () => sp(null) }), /* @__PURE__ */ React.createElement("div", { style: { padding: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 14, marginBottom: 16, alignItems: "center" } }, /* @__PURE__ */ React.createElement(Av, { name: profile.name, photo: profile.photo || "", size: 68 }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 800, fontSize: 18, color: C.N } }, profile.name), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: C.MU, marginTop: 2 } }, profile.dept), profile.bio && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: "#555", marginTop: 5, fontStyle: "italic", lineHeight: 1.5 } }, '"', profile.bio, '"'))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 16 } }, [[sessions.filter((s) => s.trainerId === profile.id).length, "Class", C.BL], [totalH(sessions, courses, profile.id) + "h", "\u0E0A\u0E21.", C.GR], [avgR(sessions, profile.id) || "\u2014", "\u2605", C.AM]].map(([v, lb, c]) => /* @__PURE__ */ React.createElement("div", { key: lb, style: { background: C.BG, borderRadius: 8, padding: "8px 3px", textAlign: "center", border: "1px solid " + C.LN } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 18, fontWeight: 700, color: c } }, v), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: C.MU } }, lb)))), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 14 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.N, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 } }, "\u{1F4DA} \u0E2B\u0E25\u0E31\u0E01\u0E2A\u0E39\u0E15\u0E23\u0E17\u0E35\u0E48\u0E44\u0E14\u0E49\u0E23\u0E31\u0E1A\u0E23\u0E2D\u0E07"), profile.courseIds.map((cid) => {
+    const co = courses.find((x) => x.id === cid);
+    if (!co) return null;
+    const m = mLeft(profile.certDate, co.renewMonths), s = eb(m);
+    return /* @__PURE__ */ React.createElement("div", { key: cid, style: { background: C.BG, borderRadius: 8, padding: "9px 12px", marginBottom: 7, border: "1px solid " + C.LN, display: "flex", justifyContent: "space-between", alignItems: "center" } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, color: CAT[co.category] || C.BL, fontWeight: 700, marginRight: 6 } }, co.code), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, fontWeight: 700, color: C.N } }, co.name)), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 10, background: s.bg, color: s.c, padding: "2px 8px", borderRadius: 99, fontWeight: 700, flexShrink: 0, marginLeft: 8 } }, s.lb));
+  })), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 16 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.N, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.5 } }, "\u{1F3AF} \u0E2A\u0E21\u0E23\u0E23\u0E16\u0E19\u0E30"), COMP.map((k) => {
+    var _a;
+    const v = ((_a = profile.competencies) == null ? void 0 : _a[k]) || 0;
+    return /* @__PURE__ */ React.createElement("div", { key: k, style: { marginBottom: 7 } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 3 } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#333" } }, k), /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, color: C.G } }, v, "/5")), /* @__PURE__ */ React.createElement("div", { style: { height: 6, background: C.LN, borderRadius: 99 } }, /* @__PURE__ */ React.createElement("div", { style: { height: "100%", width: v / 5 * 100 + "%", background: C.G, borderRadius: 99, transition: "width .3s" } })));
+  })), /* @__PURE__ */ React.createElement("button", { onClick: () => {
+    sp(null);
+    setTimeout(() => sb(profile), 30);
+  }, style: { width: "100%", padding: 11, borderRadius: 9, border: "none", cursor: "pointer", background: C.N, color: "#fff", fontWeight: 700, fontSize: 14, fontFamily: "inherit" } }, "\u{1F4C5} \u0E02\u0E2D\u0E08\u0E2D\u0E07\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23\u0E04\u0E19\u0E19\u0E35\u0E49"))), book && /* @__PURE__ */ React.createElement(Modal, { onClose: () => sb(null) }, /* @__PURE__ */ React.createElement(MH, { title: "\u{1F4C5} \u0E02\u0E2D\u0E08\u0E2D\u0E07\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", onClose: () => sb(null) }), /* @__PURE__ */ React.createElement(BookF, { trainer: book, courses, onClose: () => sb(null), onSave: saveBook })), rate && /* @__PURE__ */ React.createElement(Modal, { onClose: () => sr(null) }, /* @__PURE__ */ React.createElement(MH, { title: "\u2B50 \u0E43\u0E2B\u0E49\u0E04\u0E30\u0E41\u0E19\u0E19\u0E27\u0E34\u0E17\u0E22\u0E32\u0E01\u0E23", onClose: () => sr(null) }), /* @__PURE__ */ React.createElement(RateF, { sess: rate, courses, trainers, ratings, onClose: () => sr(null), onSubmit: submitRating })), hrd && /* @__PURE__ */ React.createElement(HRD, { data: D, setData: sD, onClose: () => sh(false) }), bookOK && /* @__PURE__ */ React.createElement("div", { onClick: () => sbOK(null), style: { position: "fixed", inset: 0, background: "rgba(0,0,0,.5)", zIndex: 2e3, display: "flex", alignItems: "center", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 14, padding: 28, textAlign: "center", maxWidth: 300 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 46, marginBottom: 10 } }, "\u{1F389}"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: C.N, marginBottom: 7 } }, "\u0E2A\u0E48\u0E07\u0E04\u0E33\u0E02\u0E2D\u0E2A\u0E33\u0E40\u0E23\u0E47\u0E08"), /* @__PURE__ */ React.createElement("div", { style: { background: C.GL, borderRadius: 8, padding: "6px 18px", display: "inline-block", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: C.MU } }, "\u0E40\u0E25\u0E02\u0E17\u0E35\u0E48"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: C.N, letterSpacing: 2 } }, bookOK)), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU, marginBottom: 14 } }, "HRD \u0E08\u0E30\u0E15\u0E34\u0E14\u0E15\u0E48\u0E2D\u0E01\u0E25\u0E31\u0E1A\u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E22\u0E37\u0E19\u0E22\u0E31\u0E19"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => sbOK(null), style: { padding: "8px 24px" } }, "\u0E15\u0E01\u0E25\u0E07"))), pin && /* @__PURE__ */ React.createElement("div", { onClick: (e) => e.target === e.currentTarget && spm(false), style: { position: "fixed", inset: 0, background: "rgba(0,0,0,.5)", zIndex: 2e3, display: "flex", alignItems: "center", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { background: "#fff", borderRadius: 14, overflow: "hidden", maxWidth: 300, width: "100%" } }, /* @__PURE__ */ React.createElement(MH, { title: "\u{1F510} \u0E40\u0E02\u0E49\u0E32\u0E2A\u0E39\u0E48\u0E23\u0E30\u0E1A\u0E1A HRD", onClose: () => spm(false) }), /* @__PURE__ */ React.createElement("div", { style: { padding: 24, textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: C.MU, marginBottom: 12 } }, "\u0E01\u0E23\u0E2D\u0E01 PIN 4 \u0E2B\u0E25\u0E31\u0E01"), /* @__PURE__ */ React.createElement("input", { type: "password", value: pv, onChange: (e) => {
+    spv(e.target.value);
+    spe(false);
+  }, onKeyDown: (e) => e.key === "Enter" && (pv === PIN ? (spm(false), sh(true), spv("")) : (spe(true), spv(""))), style: __spreadProps(__spreadValues({}, IS), { textAlign: "center", fontSize: 24, letterSpacing: 10, width: 150, margin: "0 auto 8px" }), maxLength: 6, placeholder: "\u2022\u2022\u2022\u2022", autoFocus: true }), pe && /* @__PURE__ */ React.createElement("div", { style: { color: C.RD, fontSize: 12, marginBottom: 8 } }, "PIN \u0E44\u0E21\u0E48\u0E16\u0E39\u0E01\u0E15\u0E49\u0E2D\u0E07"), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, justifyContent: "center", marginTop: 12 } }, /* @__PURE__ */ React.createElement("button", { onClick: () => spm(false), style: { padding: "7px 16px", borderRadius: 7, border: "1.5px solid " + C.LN, background: "transparent", cursor: "pointer", fontFamily: "inherit", color: C.MU } }, "\u0E22\u0E01\u0E40\u0E25\u0E34\u0E01"), /* @__PURE__ */ React.createElement(Btn, { onClick: () => pv === PIN ? (spm(false), sh(true), spv("")) : (spe(true), spv("")) }, "\u0E40\u0E02\u0E49\u0E32\u0E2A\u0E39\u0E48\u0E23\u0E30\u0E1A\u0E1A"))))));
 }
-
-function BookingForm({trainer,courses,onClose,onSave}){
-  const [f,sf]=useState({trainerId:trainer.id,courseId:trainer.courseIds[0]||"",date:"",dept:"",name:"",attendees:"",contact:""});
-  const set=(k,v)=>sf(x=>({...x,[k]:v}));const ok=f.courseId&&f.date&&f.dept&&f.name;
-  return <div style={{padding:18}}>
-    <div style={{display:"flex",gap:9,alignItems:"center",marginBottom:13,paddingBottom:11,borderBottom:"1px solid "+C.LN}}>
-      <Av name={trainer.name} size={36}/><div><div style={{fontWeight:700,color:C.N}}>{trainer.name}</div><div style={{fontSize:11,color:C.MU}}>{trainer.dept}</div></div>
-    </div>
-    <FL label="หลักสูตร" req>
-      <select style={IS} value={f.courseId} onChange={e=>set("courseId",e.target.value)}>
-        {trainer.courseIds.map(cid=>{const co=courses.find(x=>x.id===cid);return co?<option key={cid} value={cid}>{co.code} — {co.name}</option>:null;})}
-      </select>
-    </FL>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"0 10px"}}>
-      <FL label="วันที่" req><input style={IS} type="date" value={f.date} onChange={e=>set("date",e.target.value)}/></FL>
-      <FL label="จำนวนคน"><input style={IS} type="number" value={f.attendees} onChange={e=>set("attendees",e.target.value)}/></FL>
-      <FL label="ผู้ขอ" req><input style={IS} value={f.name} onChange={e=>set("name",e.target.value)}/></FL>
-      <FL label="แผนก" req><input style={IS} value={f.dept} onChange={e=>set("dept",e.target.value)}/></FL>
-    </div>
-    <FL label="ติดต่อ"><input style={IS} value={f.contact} onChange={e=>set("contact",e.target.value)} placeholder="เบอร์ / LINE / Email"/></FL>
-    <div style={{display:"flex",gap:7,justifyContent:"flex-end",marginTop:6}}>
-      <button onClick={onClose} style={{padding:"7px 14px",borderRadius:7,border:"1.5px solid "+C.LN,background:"transparent",cursor:"pointer",fontFamily:"inherit",color:C.MU}}>ยกเลิก</button>
-      <Btn onClick={()=>ok&&onSave(f)} disabled={!ok}>📩 ส่งคำขอ</Btn>
-    </div>
-  </div>;
-}
-
-function RatingModal({sess,courses,trainers,ratings,onClose,onSubmit}){
-  const co=courses.find(c=>c.id===sess.courseId);const tr=trainers.find(t=>t.id===sess.trainerId);
-  const [stars,ss]=useState(0);const [hover,sh]=useState(0);const [comment,sc]=useState("");
-  const dk=devKey();const already=ratings.some(r=>r.sessionId===sess.id&&r.deviceKey===dk);
-  const lbl=["","😕 ต้องปรับปรุง","😐 พอใช้","🙂 ดี","😊 ดีมาก","🤩 ยอดเยี่ยม"];
-  return <Modal onClose={onClose}>
-    <MHead title="⭐ ให้คะแนนวิทยากร" onClose={onClose}/>
-    <div style={{padding:18}}>
-      <div style={{display:"flex",gap:11,alignItems:"center",marginBottom:14,paddingBottom:12,borderBottom:"1px solid "+C.LN}}>
-        <Av name={tr?.name||"?"} size={42}/><div>
-          <div style={{fontWeight:700,color:C.N,fontSize:14}}>{tr?.name}</div>
-          <div style={{fontSize:12,color:CAT[co?.category]||C.BL,fontWeight:600}}>{co?.name}</div>
-          <div style={{fontSize:11,color:C.MU}}>📅 {sess.date} · 📍 {sess.location}</div>
-        </div>
-        {sess.ratingCount>0&&<div style={{marginLeft:"auto",textAlign:"center",background:C.AMB,borderRadius:9,padding:"5px 11px",flexShrink:0}}>
-          <div style={{fontSize:10,color:C.AM}}>คะแนนปัจจุบัน</div>
-          <div style={{fontSize:18,fontWeight:700,color:C.AM}}>★ {sess.rating}</div>
-          <div style={{fontSize:10,color:C.AM}}>({sess.ratingCount})</div>
-        </div>}
-      </div>
-      {already?<div style={{textAlign:"center",padding:"18px 0"}}>
-        <div style={{fontSize:38,marginBottom:7}}>✅</div>
-        <div style={{fontWeight:700,color:C.N,fontSize:14,marginBottom:5}}>คุณให้คะแนน Session นี้แล้ว</div>
-        <div style={{fontSize:12,color:C.MU,marginBottom:14}}>1 เครื่องให้คะแนนได้ 1 ครั้ง</div>
-        <Btn onClick={onClose}>ปิด</Btn>
-      </div>:<div>
-        <div style={{textAlign:"center",marginBottom:8}}><div style={{fontSize:13,fontWeight:700,color:C.N}}>การอบรมครั้งนี้เป็นประโยชน์แค่ไหน?</div></div>
-        <div style={{display:"flex",justifyContent:"center",gap:5,marginBottom:5}}>
-          {[1,2,3,4,5].map(v=><button key={v} onClick={()=>ss(v)} onMouseEnter={()=>sh(v)} onMouseLeave={()=>sh(0)}
-            style={{background:"none",border:"none",cursor:"pointer",fontSize:40,lineHeight:1,transform:(hover||stars)>=v?"scale(1.2)":"scale(1)",transition:"transform .1s",filter:(hover||stars)>=v?"none":"grayscale(1) opacity(.3)"}}>⭐</button>)}
-        </div>
-        <div style={{textAlign:"center",height:22,marginBottom:12,fontSize:13,fontWeight:700,color:C.AM}}>{(hover||stars)>0&&lbl[hover||stars]}</div>
-        <textarea value={comment} onChange={e=>sc(e.target.value)} placeholder="ความคิดเห็น (ไม่บังคับ)" style={{...IS,minHeight:65,resize:"vertical",marginBottom:12}}/>
-        <div style={{display:"flex",gap:7}}>
-          <button onClick={onClose} style={{flex:1,padding:9,borderRadius:7,border:"1.5px solid "+C.LN,background:"transparent",color:C.MU,cursor:"pointer",fontFamily:"inherit"}}>ยกเลิก</button>
-          <Btn onClick={()=>stars&&onSubmit(sess.id,stars,comment,dk)} disabled={!stars} style={{flex:2,padding:9}}>
-            {stars?"📩 ส่งคะแนน":"เลือกคะแนนก่อน"}
-          </Btn>
-        </div>
-      </div>}
-    </div>
-  </Modal>;
-}
-
-ReactDOM.createRoot(document.getElementById("app")).render(<App/>);
+window.AppRoot = App;
+ReactDOM.createRoot(document.getElementById("app")).render(React.createElement(window.AppRoot));
 </script>
+</body>
+</html>
