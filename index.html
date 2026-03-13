@@ -1,3 +1,19 @@
+<!-- กัน cache เบื้องต้น -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<!-- เติม ?v=<เลขเวอร์ชันจาก version.txt> อัตโนมัติ (ทำครั้งแรกเมื่อยังไม่มี v=) -->
+<script>
+(async function () {
+  try {
+    const r = await fetch('version.txt?ts=' + Date.now(), { cache: 'no-store' });
+    const ver = (await r.text()).trim() || String(Date.now());
+    const url = new URL(location.href);
+    if (!url.searchParams.has('v')) {
+      url.searchParams.set('v', ver);
+      location.replace(url.toString());
+    }
+  } catch (e) {}
 <!DOCTYPE html>
 <html lang="th">
 <head>
